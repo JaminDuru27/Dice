@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@font-face {
+    font-family: geoform;
+    src: url(/fonts/Geoform-Medium.otf);
+}
+@font-face {
+    font-family: sakire;
+    src: url(/fonts/Sakire.ttf);
+}
+.geoform{
+    font-family: geoform;
+}
+.sakire{
+    font-family: sakire;
+}
+*{
+
+    box-sizing: border-box;
+    font-family: sakire;
+}
