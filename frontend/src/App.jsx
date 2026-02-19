@@ -8,10 +8,23 @@ import { Dice } from './components/dice/dice'
 import { Feedback } from './components/feedback/feed'
 import { useEffect } from 'react'
 import { SideBar } from './components/sidebar/sidebar'
+import { BrowserRouter, Router, Route, Routes} from 'react-router-dom'
+import { Todo } from './components/todosection/todo'
+import { Acct } from './components/acct/acct'
 
 function App() {
   const [message, setMessage] = useState({message:`Welcome back! Ready to roll the dice?`, type: `info`})
   const [openSide, setOpenSide] = useState(false)
+  const [openAcct, setOpenAcct] = useState(false)
+  const [accessibility, setAccessibility]  = useState({
+    theme: `normal`,
+    fontsize: 100,
+    keyboardnav: false,
+    reducedMotion: false,
+    dislexicfont: false,
+    linespacing: 100
+
+  })
   useEffect(()=>{
         let mousedown
         const timeout = setTimeout(()=>{
@@ -28,21 +41,34 @@ function App() {
   return (
     <>
     {/* <Intro /> */}
-    <div className="home flex flex-col ">
-      <Navbar onbarclick={()=>{setOpenSide(p=>!p)}} onprofileclick={()=>{}} />
-      <SideBar openSide={openSide} setOpenSide={setOpenSide}/>
+    <div 
+    style={{
+      fontSize: `${accessibility.fontsize}%`,
+      lineHeight: `${accessibility.linespacing}%`,
+      fontFamily: `${accessibility.dislexicfont?`geoform`:`sakire`}`
+    }}
+    className="home flex flex-col overflow-hidden ">
+      <Navbar onbarclick={()=>{setOpenSide(p=>!p)}} onprofileclick={()=>{setOpenAcct(p=>!p)}} />
+      <Acct setOpenAcct={setOpenAcct} openAcct ={openAcct}/>
+      <SideBar accessibility={accessibility} setAccessibility={setAccessibility} openSide={openSide} setOpenSide={setOpenSide}/>
       <div className="bgdesigns w-full h-full absolute top-0 left-0 -z-10">
         <img src="/bg (2).jpg" alt="bg2" className="w-full  h-full object-cover absolute top-0 left-0 opacity-50"/>
       </div>
 
       <div 
-      className="main relative p-4 w-full h-screen pt-20 text-black  rounded-sm bg-[#888383db]  ">
+      className="main overflow-y-auto scrolly  relative p-4 w-full h-screen pt-20 text-black  rounded-sm bg-[#888383db]  ">
         {<Feedback message={message} />}
-        {<Dice setMessage={setMessage}/>}
+        <BrowserRouter>
+          <Routes>
+            <Route path='/' element={<Dice setMessage={setMessage} />} />
+          </Routes>
+          <Routes>
+            <Route path='/todo' element={<Todo setMessage={setMessage} />} />
+          </Routes>
+        </BrowserRouter>
      </div>
     </div>
     </>
   )
 }
-
 export default App

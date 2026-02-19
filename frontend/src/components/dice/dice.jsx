@@ -19,7 +19,7 @@ export function Dice({setMessage, cb = ()=>{}}){
             {result && !list?.length  && (
                 <motion.div 
                 animate={{opacity: [0, 1, 1, 0], translateY: [10 ,0], }}
-                transition={{duration:4}}
+                transition={{duration:4, repeat: Infinity, ease: `linear`}}
                 className="bg-gradient-to-l from-blue-500 to-indigo-700 p-2 text-white px-4 capitalize text-[1.2rem] rounded-2xl outline-2 outline-indigo-700 outline-offset-2">{`${result?.name}`}</motion.div>
             ) 
             }

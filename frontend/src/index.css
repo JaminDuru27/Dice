@@ -17,5 +17,7 @@
 *{
 
     box-sizing: border-box;
-    font-family: sakire;
+}
+body{
+    overflow: hidden;
 }
