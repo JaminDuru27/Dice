@@ -3,7 +3,7 @@ export function Navbar({onbarclick = ()=>{}, onprofileclick= ()=>{}}) {
     return (
         <nav
         style={{backgroundImage: `linear-gradient(56deg, #08dcc6, #e73ae7 100%)`}}
-        className="navbar rounded-[10rem] w-[90%] p-2 fixed z-10  cursor-pointer top-2 left-1/2 translate-x-[-50%]   bg-gray-800  text-white flex items-center justify-between px-4">
+        className="navbar border-b-2  border-white/80 rounded-[10rem] w-[90%] p-1 sm:p-2 fixed z-10  cursor-pointer top-2 left-1/2 translate-x-[-50%]   bg-gray-800  text-white flex items-center justify-between px-4">
             <div 
             onClick={()=>{
                 onbarclick()
@@ -13,7 +13,7 @@ export function Navbar({onbarclick = ()=>{}, onprofileclick= ()=>{}}) {
             </div>
             <div className="logo flex items-center justify-between  gap-x-2">
                 <div className="w-5 h-5 rounded-[50%] bg-white/20"></div>
-                <div className="">Dice</div>
+                <div className="text-[.8rem] sm:text-[.9rem] md:text-[1rem]">Dice</div>
             </div>
             <div 
             className='cursor-pointer'

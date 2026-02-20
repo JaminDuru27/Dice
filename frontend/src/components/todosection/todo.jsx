@@ -28,20 +28,24 @@ export function Todo({setMessage}) {
                     style={{backgroundImage: `linear-gradient(90deg, #08dcc6, #e73ae7)`}}
                     className="lev w-[40%] rounded-lg shadow-2xs h-2 bg-purple-700"></motion.div>
                 </div>
-                <div className="list g-[#888383db]/20 backdrop-blur-2xl shadow-2xl w-full h-fit gap-8 rounded-sm b p-4 flex flex-col ">
-
+                <div className="list  g-[#888383db]/20 backdrop-blur-2xl border-1 border-white/20 relative shadow-2xl  w-full h-fit gap-8 rounded-lg b p-4  py-10 flex flex-col ">
+                    <div className="designs w-full h-full absolute overflow-hidden top-0 left-0 rounded-lg">
+                        <div className="circle rounded-full w-90 h-190 bg-violet-700/20 blur-[160px] top-10 right-28 absolute"></div>
+                        <div className="circle rounded-full w-190 h-90 bg-indigo-700/20 blur-[160px] absolute"></div>
+                        <div className="circle rounded-full w-190 h-190 bg-cyan-700/20 blur-[160px] top-64 absolute"></div>
+                    </div>
                     <ListItem time={`10:20pm`} date={`12/08/26`} title={`Start Joffing`} descr={`dow iwhiq wy`} completed={true}/>
                     <ListItem time={`10:20pm`} date={`12/08/26`} title={`Start Joffing`} descr={`dow iwhiq wy`} completed={true}/>
                     <ListItem time={`10:20pm`} date={`12/08/26`} title={`Start Joffing`} descr={`dow iwhiq wy`} completed={true}/>
                     <ListItem time={`10:20pm`} date={`12/08/26`} title={`Start Joffing`} descr={`dow iwhiq wy`} completed={true}/>
                     <ListItem time={`10:20pm`} date={`12/08/26`} title={`Start Joffing`} descr={`dow iwhiq wy`} completed={true}/>
-                    <div className="addlist border-2 text-white border-white/20 rounded-2xl p-4 flex flex-col gap-4">
+                    <div className="addlist border-2 text-white border-white/90 rounded-2xl p-4 flex flex-col gap-4">
                         <div className="flex w-full gap-2 justify-between">
                             <input type="time" className="time w-1/2" />
-                            <input required type="text" className="input w-1/2 p-2 rounded-2xl border-2 border-white/20" placeholder="Add todo item"/>
+                            <input required type="text" className="input w-1/2 p-2 rounded-2xl border-2 border-white/90" placeholder="Add todo item"/>
                         </div>
                         <div className="flex flex-col sm:flex-row gap-2 justify-between items-center w-full">
-                            <textarea name="description" className="w-full sm:w-1/2 border-2 border-white/20 p-2 text-[.8rem] rounded-2xl" id="description"></textarea>
+                            <textarea name="description" className="w-full sm:w-1/2 border-2 border-white/90 p-2 text-[.8rem] rounded-2xl" id="description"></textarea>
                             <button className="addbtn w-full sm:w-fit bg-gradient-to-r px-4 justify-center  cursor-pointer from-blue-500 to-indigo-700  p-2 outline-2 outline-offset-2 outline-indigo-700  rounded-2xl bg- flex items-center gap-2">Add {<Plus/>}</button>
                         </div>
                     </div>
@@ -58,16 +62,19 @@ export function ListItem({date, time, title, descr, completed, completedChange=(
         <motion.div 
         animate={{opacity:[0,1], translateY:[10, 0]}}
         transition = {{duration:1}}
-        className="list p-2 border-white/20 relative border-2 gap-2 rounded-2xl flex p-4">
-            <div className="text-black capitalize w-full">
-                <div className="tile absolute top-0 translate-y-[-100%] left-2 text-[.6rem]  capitalize">
+        className="list p-2 border-white/60 relative border bg-white/10 gap-2 rounded-2xl flex p-4">
+            <div className="text-white capitalize w-full">
+                <div className="tile absolute top-0 translate-y-[-120%] left-2 text-[.6rem]  capitalize">
                     {time}, {date}
                 </div>
                 <div className="title">{title}</div>
                 <motion.div 
                 onClick={()=>{setopen(p=>!p)}}
-                animate={open?{height: `fit-content`}:{height:20}}
-                className="descr overflow-hidden p-2 text-black/80 text-[.7rem]">{descr}</motion.div>
+                animate={open?{height: `fit-content`}:{height:`1.5rem`}}
+                className="descr overflow-hidden p-2 relative text-white/80 mt-2  text-[.7rem]">
+                <div className={`w-1 h-full  absolute left-[-2px] top-1/2 translate-y-[-50%] rounded-sm bg-white/50`}></div>    
+                    {descr}
+                </motion.div>
             </div>
             <motion.div 
             whileTap={{scale:.7}}
@@ -75,7 +82,7 @@ export function ListItem({date, time, title, descr, completed, completedChange=(
                 setcomp(p=>!p)
                 completedChange(comp)
             }}
-            className="check cursor-pointer h-fit">
+            className="check cursor-pointer h-fit text-white">
                 {comp?<CheckCircle/>: <CircleIcon/>}
             </motion.div>
         </motion.div>

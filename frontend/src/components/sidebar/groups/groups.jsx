@@ -1,5 +1,5 @@
 import { delay, motion } from "framer-motion";
-import { Dice3, GroupIcon, MessageCircleDashed } from "lucide-react";
+import { Dice3, GroupIcon, MessageCircleDashed, Plus } from "lucide-react";
 
 export function Groups(){
     return (
@@ -8,6 +8,12 @@ export function Groups(){
             <div 
             style={{boxShadow: `0px 0px 18px -8px black inset  `}}
             className="groups  flex gap-2  relative  p-2 rounded-2xl overflow-x-auto scrollx">
+                <div 
+                className="group px-2 flex text-center   shrink-0 min-w-20 cursor-pointer drop-shadow-black/100 overflow-hidden drop-shadow-2xl w-fit bg-white/20 p-2 rounded-2xl  flex-row justify-center items-center gap-0"
+                >
+                    Add New Group {<Plus size={20}/>}
+
+                </div>
                 <Group key={0} name={`gergaubd`} cb={()=>{}}/>
                 <Group key={1} name={`0983hfhji he8dj2j`} cb={()=>{}}/>
                 <Group key={2} name={`9039293jfj2jfjhf9hhfh82`} cb={()=>{}}/>

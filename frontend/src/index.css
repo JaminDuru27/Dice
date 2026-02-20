@@ -6,7 +6,12 @@
 }
 @font-face {
     font-family: sakire;
-    src: url(/fonts/Sakire.ttf);
+    src: url(/fonts/Soligant.ttf);
+    /* src: url(/fonts/Sakire.ttf); */
+}
+@font-face {
+    font-family: dyslexic;
+    src: url(/fonts/OpenDyslexic-Bold.otf);
 }
 .geoform{
     font-family: geoform;

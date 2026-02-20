@@ -68,7 +68,7 @@ export function Dice({setMessage, cb = ()=>{}}){
             
                 time[`current`] = setTimeout(()=>{
                     setroll(false)
-                    const index = randomIndex()
+                       const index = randomIndex()
                     setresult((list[index]))
                     cb(list[index || 0])
                     setlist([])

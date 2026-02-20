@@ -11,6 +11,7 @@ import { SideBar } from './components/sidebar/sidebar'
 import { BrowserRouter, Router, Route, Routes} from 'react-router-dom'
 import { Todo } from './components/todosection/todo'
 import { Acct } from './components/acct/acct'
+import { Chat } from './components/chat/chat'
 
 function App() {
   const [message, setMessage] = useState({message:`Welcome back! Ready to roll the dice?`, type: `info`})
@@ -45,7 +46,7 @@ function App() {
     style={{
       fontSize: `${accessibility.fontsize}%`,
       lineHeight: `${accessibility.linespacing}%`,
-      fontFamily: `${accessibility.dislexicfont?`geoform`:`sakire`}`
+      fontFamily: `${accessibility.dislexicfont?`dyslexic`:`geoform`}`
     }}
     className="home flex flex-col overflow-hidden ">
       <Navbar onbarclick={()=>{setOpenSide(p=>!p)}} onprofileclick={()=>{setOpenAcct(p=>!p)}} />
@@ -56,7 +57,7 @@ function App() {
       </div>
 
       <div 
-      className="main overflow-y-auto scrolly  relative p-4 w-full h-screen pt-20 text-black  rounded-sm bg-[#888383db]  ">
+      className="main overflow-y-auto scrolly  relative p-4 w-full h-screen pt-20 text-black  rounded-sm bg-black/90 backdrop-blur-[2px]  ">
         {<Feedback message={message} />}
         <BrowserRouter>
           <Routes>
@@ -64,6 +65,9 @@ function App() {
           </Routes>
           <Routes>
             <Route path='/todo' element={<Todo setMessage={setMessage} />} />
+          </Routes>
+          <Routes>
+            <Route path='/chat' element={<Chat setMessage={setMessage} />} />
           </Routes>
         </BrowserRouter>
      </div>
