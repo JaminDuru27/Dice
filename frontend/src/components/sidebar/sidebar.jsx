@@ -31,23 +31,23 @@ export function SideBar({openSide, setOpenSide, accessibility, setAccessibility}
         )}
         <motion.div 
         animate={openSide?{opacity: [0, 1], translateX:[-50, 0], display:`flex`}:{opacity: [1, 0], translateX:[0, -50], display: `none`}}
-        className="sidebar p-2 bg-2 rounded-full absolute top-1/2 shadow-2xl left- flex flex-col gap-2 translate-y-[-50%] bg-white/20 backdrop-blur-2xl z-10 ">
-            <Btn setD={setD} setOpenSide={setOpenSide} cb={(e)=>{console.log(`open acct`)}}element={<UserCircle />}/>
-            <Btn setD={setD} setOpenSide={setOpenSide} cb={(e)=>{setD({name:`projects`, hide:true, x: e.clientX + 50, y: e.clientY }); setOpenSide(false)}} element={<MenuSquare />}/>
-            <Btn setD={setD} setOpenSide={setOpenSide} cb={(e)=>{
+        className="sidebar p-2 bg-2 rounded-full absolute top-1/2 shadow-2xl left- flex flex-col gap-2 translate-y-[-50%]  z-10 ">
+            <Btn key={1} setD={setD} setOpenSide={setOpenSide} cb={(e)=>{setD({name:`projects`, hide:true, x: e.clientX + 50, y: e.clientY }); setOpenSide(false)}} element={<MenuSquare />}/>
+            <Btn key={2} setD={setD} setOpenSide={setOpenSide} cb={(e)=>{
                 setD({name:`accessibility`, x: e.clientX + 50, y: e.clientY })
             }} element={<AccessibilityIcon/>}/>
-            <Btn setD={setD} setOpenSide={setOpenSide} cb={(e)=>{setD({name:`clocksettings`, x: e.clientX + 50, y: e.clientY })}} element={<Clock10/>}/>
-            <Btn setD={setD} setOpenSide={setOpenSide} cb={(e)=>{setD({name:`groups`, x: e.clientX + 50, y: e.clientY })}}element={<UsersIcon />}/>
-            <Btn setD={setD} setOpenSide={setOpenSide} cb={(e)=>{setD({name:`contacts`, x: e.clientX + 50, y: e.clientY })}}element={<MessageCircle/>}/>
+            <Btn key={3} setD={setD} setOpenSide={setOpenSide} cb={(e)=>{setD({name:`clocksettings`, x: e.clientX + 50, y: e.clientY })}} element={<Clock10/>}/>
+            <Btn key={4} setD={setD} setOpenSide={setOpenSide} cb={(e)=>{setD({name:`groups`, x: e.clientX + 50, y: e.clientY })}}element={<UsersIcon />}/>
+            <Btn key={5} setD={setD} setOpenSide={setOpenSide} cb={(e)=>{setD({name:`contacts`, x: e.clientX + 50, y: e.clientY })}}element={<MessageCircle/>}/>
         </motion.div>
         </>
     )
 }
 
-function Btn({element , setD, cb = ()=>{}, setOpenSide}){
+function Btn({element , setD, key, cb = ()=>{}, setOpenSide}){
     return (
         <motion.div
+        transition={{delay:key * 0.1}}
         whileTap={{scale: .8}}
         onClick={()=>{setOpenSide(false); setD(false)}}
         onHoverStart={(e, op)=>{cb({clientX: e.target.getBoundingClientRect().x, clientY: e.target.getBoundingClientRect().y})}}

@@ -49,6 +49,7 @@ export function Dice({setMessage, cb = ()=>{}}){
             </div>
             <motion.div 
             animate={(roll)?{rotate: [`0deg`, `360deg`]}:{}}
+            transition={{repeat: Infinity, ease: `linear`}}
             onClick={()=>{
                 if(list.length>=6) {setMessage({message:`You can only have 6 items`, type:`error`}); return}
                 clearTimeout(time[`current`])

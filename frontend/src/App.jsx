@@ -49,9 +49,6 @@ function App() {
       fontFamily: `${accessibility.dislexicfont?`dyslexic`:`geoform`}`
     }}
     className="home flex flex-col overflow-hidden ">
-      <Navbar onbarclick={()=>{setOpenSide(p=>!p)}} onprofileclick={()=>{setOpenAcct(p=>!p)}} />
-      <Acct setOpenAcct={setOpenAcct} openAcct ={openAcct}/>
-      <SideBar accessibility={accessibility} setAccessibility={setAccessibility} openSide={openSide} setOpenSide={setOpenSide}/>
       <div className="bgdesigns w-full h-full absolute top-0 left-0 -z-10">
         <img src="/bg (2).jpg" alt="bg2" className="w-full  h-full object-cover absolute top-0 left-0 opacity-50"/>
       </div>
@@ -61,13 +58,31 @@ function App() {
         {<Feedback message={message} />}
         <BrowserRouter>
           <Routes>
-            <Route path='/' element={<Dice setMessage={setMessage} />} />
+            <Route path='/' element={
+              <>
+                <Navbar onbarclick={()=>{setOpenSide(p=>!p)}} onprofileclick={()=>{setOpenAcct(p=>!p)}} />
+                <Acct setOpenAcct={setOpenAcct} openAcct ={openAcct}/>
+                <SideBar accessibility={accessibility} setAccessibility={setAccessibility} openSide={openSide} setOpenSide={setOpenSide}/>
+                <Dice setMessage={setMessage} />
+                </>
+            } />
           </Routes>
           <Routes>
-            <Route path='/todo' element={<Todo setMessage={setMessage} />} />
+            <Route path='/todo' element={
+              <>
+                <Navbar onbarclick={()=>{setOpenSide(p=>!p)}} onprofileclick={()=>{setOpenAcct(p=>!p)}} />
+                <Acct setOpenAcct={setOpenAcct} openAcct ={openAcct}/>
+                <SideBar accessibility={accessibility} setAccessibility={setAccessibility} openSide={openSide} setOpenSide={setOpenSide}/>
+                <Todo setMessage={setMessage} />
+              </>
+            } />
           </Routes>
           <Routes>
-            <Route path='/chat' element={<Chat setMessage={setMessage} />} />
+            <Route path='/chat' element={
+              <>
+                <Chat setMessage={setMessage} />
+              </>
+            } />
           </Routes>
         </BrowserRouter>
      </div>
