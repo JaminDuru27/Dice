@@ -4,11 +4,11 @@ import { BellIcon, XCircle } from "lucide-react"
 export function Feedback({message}){
     return (
         <motion.div 
-        animate={message?{opacity: [0, 1], translateY: [0,20],  }:{opacity: 0, translateY: 20}}
+        animate={message?{opacity: [0, 1], translateY: [0,60],  }:{opacity: [1,0], translateY: 20}}
         transition={{duration: 0.5}}
-        className="w-fit h-fit flex-col gap-2 bg-blue-500 absolute  top-5 left-1/2 translate-x-[-50%] backdrop-blur-2xl p-2 text-center text-[.8rem] rounded-2xl text-white geoform flex items-center justify-center">
+        className="w-fit h-fit border border-white/20 px-4  flex-col gap-2 z-10 bg-black/20   absolute  top-5 left-1/2 translate-x-[-50%] backdrop-blur-2xl p-2 text-center text-[.8rem] rounded-2xl text-white geoform flex items-center justify-center">
             <motion.div className="bell bottom-2 right-2 text-black/40">
-            {message?.type === `info` && <BellIcon size={16} />}
+            {message?.type === `info` && <BellIcon size={16} className="text-white" />}
             {message?.type === `error` && <XCircle size={16} className="text-red-500" />}
             </motion.div>
             <motion.div 

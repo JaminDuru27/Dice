@@ -5,10 +5,10 @@ export function Acct({openAcct, setOpenAcct}){
     return (
         <motion.div 
         animate={openAcct?{display:`block`, opacity: [0, 1]}:{display:`none`, opacity: [1, 0]}}
-        style={{boxShadow: `2px 2px 24px -7px black`}}
+        style={{boxShadow: `2px 2px 24px -7px black`, display:`none`}}
         className="
-        bg-gradient-to-l from-blue-500/40 to-indigo-700/40 to-blue-700/40 backdrop-blur-2xl 
-        absolute top-20 z-20 text-white w-[60%] sm:w-[1/2] text-[.5rem] sm:text-[.7rem] md:text-[.8rem] sm:w-[50%] md:w-[20%] right-5 border border-white/20 shadow-2xl  rounded-2xl p-2 ">
+        bg-gradient-to-l from-blue-500/40 to-indigo-700/40 to-blue-700/40 opacity-0 backdrop-blur-2xl 
+        fixed top-20 z-20 text-white w-[60%] sm:w-[1/2] text-[.5rem] sm:text-[.7rem] md:text-[.8rem] sm:w-[50%] md:w-[20%] right-5 border border-white/20 shadow-2xl  rounded-2xl p-2 ">
             <div className="p w-full flex flex-col  justify-center items-center gap-2">
                 {<Dice3 size={70} color="#313198"/>}
                 <div className="name capitalize">Don Simon</div>

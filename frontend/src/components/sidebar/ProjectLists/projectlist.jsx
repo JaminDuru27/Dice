@@ -4,9 +4,9 @@ import { Cloud, DoorClosedIcon, DoorOpenIcon, PlusIcon, SunIcon } from "lucide-r
 export function ProjectList({d,setD}){
     return (
         <motion.div 
-        animate={(d?.name === `projects`)?{opacity: [0,1,], translateX: [-50, 5]}:{opacity: [1, 0], translateX: [5, -50], display: `none`}}
-        style={{boxShadow: `2px 2px 24px -7px black`}}
-        className="w-[40%] sm:w-1/4 p-2 md:w-1/4 lg:w-1/6 border border-white/20  rounded-sm bg-white/2 text-white backdrop-blur-2xl h-[90vh] fixed top-1/2 translate-y-[-50%] left-0 z-10">
+        animate={(d?.name === `projects`)?{opacity: [0,1,], translateX: [-50, 5], display: `block`}:{opacity: [1, 0], translateX: [5, -50], display: `none`}}
+        style={{boxShadow: `2px 2px 24px -7px black`, display:`none`}}
+        className="w-[40%] opacity- sm:w-1/4 p-2 md:w-1/4 lg:w-1/6 border border-white/20  rounded-sm bg-white/2 text-white backdrop-blur-2xl h-[90vh] fixed top-1/2 translate-y-[-50%] left-0 z-10">
             <motion.div 
             onClick={()=>{
                 setD(false)

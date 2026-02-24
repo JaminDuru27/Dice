@@ -12,6 +12,7 @@ import { BrowserRouter, Router, Route, Routes} from 'react-router-dom'
 import { Todo } from './components/todosection/todo'
 import { Acct } from './components/acct/acct'
 import { Chat } from './components/chat/chat'
+import { Auth } from './components/auth/auth'
 
 function App() {
   const [message, setMessage] = useState({message:`Welcome back! Ready to roll the dice?`, type: `info`})
@@ -54,7 +55,7 @@ function App() {
       </div>
 
       <div 
-      className="main overflow-y-auto scrolly  relative p-4 w-full h-screen pt-20 text-black  rounded-sm bg-black/90 backdrop-blur-[2px]  ">
+      className="main overflow-y-auto scrolly  relative p-4 w-full h-screen pt-20 text-black  rounded-sm bg-black/90   ">
         {<Feedback message={message} />}
         <BrowserRouter>
           <Routes>
@@ -77,6 +78,14 @@ function App() {
               </>
             } />
           </Routes>
+          <Routes>
+            <Route path='/auth' element={
+              <>
+                <Auth setMessage={setMessage} />
+              </>
+            } />
+          </Routes>
+
           <Routes>
             <Route path='/chat' element={
               <>

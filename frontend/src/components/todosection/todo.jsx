@@ -29,7 +29,7 @@ export function Todo({setMessage}) {
                     className="lev w-[40%] rounded-lg shadow-2xs h-2 bg-purple-700"></motion.div>
                 </div>
                 <div className="list  g-[#888383db]/20 backdrop-blur-2xl border-1 border-white/20 relative shadow-2xl  w-full h-fit gap-8 rounded-lg b p-4  py-10 flex flex-col ">
-                    <div className="designs w-full h-full absolute overflow-hidden top-0 left-0 rounded-lg">
+                    <div className="designs z-[-1] w-full h-full absolute overflow-hidden top-0 left-0 rounded-lg">
                         <div className="circle rounded-full w-90 h-190 bg-violet-700/20 blur-[160px] top-10 right-28 absolute"></div>
                         <div className="circle rounded-full w-190 h-90 bg-indigo-700/20 blur-[160px] absolute"></div>
                         <div className="circle rounded-full w-190 h-190 bg-cyan-700/20 blur-[160px] top-64 absolute"></div>
