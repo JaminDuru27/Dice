@@ -8,12 +8,15 @@ import { Dice } from './components/dice/dice'
 import { Feedback } from './components/feedback/feed'
 import { useEffect } from 'react'
 import { SideBar } from './components/sidebar/sidebar'
-import { BrowserRouter, Router, Route, Routes} from 'react-router-dom'
+import { BrowserRouter, Router, Route, Routes, useNavigate, Navigate} from 'react-router-dom'
 import { Todo } from './components/todosection/todo'
 import { Acct } from './components/acct/acct'
 import { Chat } from './components/chat/chat'
 import { Auth } from './components/auth/auth'
-
+import { Home } from './pages/home'
+import { useQuery} from '@tanstack/react-query'
+import { Loading } from './loading/loading'
+// import {} from '@tanstack/react-router'
 function App() {
   const [message, setMessage] = useState({message:`Welcome back! Ready to roll the dice?`, type: `info`})
   const [openSide, setOpenSide] = useState(false)
@@ -40,9 +43,32 @@ function App() {
         }
    }
     ,[])
+  const fetchProfile = async ()=>{
+    const api = `http://localhost:3000`
+
+    const response = await fetch(`${api}/api/users/profile`,{
+      method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include' // Send cookies with request
+    })
+    if(!response.ok) throw new Error(`Error fetching Data`)
+    const json = await response.json()
+    return json.data
+  }
+  const {data, isLoading, error} = useQuery({
+    queryKey: [`profile`],
+    queryFn: fetchProfile,
+    staleTime: 5000
+  } )
+  if(isLoading) return <Loading/>
+  if(error) return (
+      <Auth setMessage={setMessage} />
+  )
   return (
     <>
-    {/* <Intro /> */}
+    <Intro />
     <div 
     style={{
       fontSize: `${accessibility.fontsize}%`,
@@ -57,34 +83,38 @@ function App() {
       <div 
       className="main overflow-y-auto scrolly  relative p-4 w-full h-screen pt-20 text-black  rounded-sm bg-black/90   ">
         {<Feedback message={message} />}
-        <BrowserRouter>
           <Routes>
             <Route path='/' element={
               <>
-                <Navbar onbarclick={()=>{setOpenSide(p=>!p)}} onprofileclick={()=>{setOpenAcct(p=>!p)}} />
-                <Acct setOpenAcct={setOpenAcct} openAcct ={openAcct}/>
-                <SideBar accessibility={accessibility} setAccessibility={setAccessibility} openSide={openSide} setOpenSide={setOpenSide}/>
-                <Dice setMessage={setMessage} />
-                </>
+                <Home 
+                setOpenAcct={setOpenAcct} 
+                openAcct={openAcct} 
+                setOpenSide={setOpenSide} 
+                openSide={openSide} 
+                setMessage={setMessage} 
+                accessibility={accessibility} 
+                setAccessibility={setAccessibility}
+                profile={data}
+                />  
+              </> 
             } />
           </Routes>
           <Routes>
             <Route path='/todo' element={
               <>
-                <Navbar onbarclick={()=>{setOpenSide(p=>!p)}} onprofileclick={()=>{setOpenAcct(p=>!p)}} />
-                <Acct setOpenAcct={setOpenAcct} openAcct ={openAcct}/>
-                <SideBar accessibility={accessibility} setAccessibility={setAccessibility} openSide={openSide} setOpenSide={setOpenSide}/>
-                <Todo setMessage={setMessage} />
+                <Navbar profile={data} onbarclick={()=>{setOpenSide(p=>!p)}} onprofileclick={()=>{setOpenAcct(p=>!p)}} />
+                <Acct profile={data} setOpenAcct={setOpenAcct} openAcct ={openAcct}/>
+                <SideBar profile={data} accessibility={accessibility} setAccessibility={setAccessibility} openSide={openSide} setOpenSide={setOpenSide}/>
+                <Todo profile={data} setMessage={setMessage} />
               </>
             } />
           </Routes>
-          <Routes>
+          {/* <Routes>
             <Route path='/auth' element={
               <>
-                <Auth setMessage={setMessage} />
               </>
             } />
-          </Routes>
+          </Routes> */}
 
           <Routes>
             <Route path='/chat' element={
@@ -93,7 +123,6 @@ function App() {
               </>
             } />
           </Routes>
-        </BrowserRouter>
      </div>
     </div>
     </>

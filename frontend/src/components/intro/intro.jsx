@@ -17,7 +17,7 @@ export function Intro() {
             {/* <img src="/bg1.jpg" alt="Dice" className="dice-image" /> */}
             <div className=""></div>
             <h1 className="intro-title">Dice</h1>
-            <div className="text">
+            <div className="text absolute top-20 text-white">
                 {texts[randomNumber(texts.length - 1, 0)]}
             </div>
         </div>

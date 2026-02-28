@@ -2,18 +2,43 @@ import { motion } from "framer-motion";
 import { Dice2, Dice4, Dice5, Dice6, Dice6Icon, DicesIcon, XIcon } from "lucide-react";
 import { useRef } from "react";
 import { useState } from "react";
+import { AddProject } from "../../utils/addProject";
+import { useNavigate } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 export function Dice({setMessage, cb = ()=>{}}){
+    const nav = useNavigate()
     const [list, setlist]= useState([])
+    const [roll, setroll]= useState(false)
+    const [result, setresult] = useState(undefined)
+    const time = useRef(null)
+
+    
+    const randomIndex = ()=>{
+        return Math.floor(Math.random() * list.length)
+    }
     const addtolist = ()=>{
         const v = {name:``, priority: 0}
         setlist(p=>[...p, v])
     }
-    const time = useRef(null)
-    const [result, setresult] = useState(undefined)
-    const randomIndex = ()=>{
-        return Math.floor(Math.random() * list.length)
+
+    const addnewproject = async ({name, priority, id})=>{
+        const res = AddProject(setMessage,{name: name, projectId: id}, 'projects', 'push')
+        .then(project=>{
+            if(project.success){
+                nav(`/todo?name=${name} &id=${id}`)
+            }
+        })
+        const data = await res
+        return data.data
     }
-    const [roll, setroll]= useState(false)
+    const queryClient = useQueryClient()
+    const {mutate} = useMutation({
+        mutationFn: addnewproject, 
+        onSuccess: (data)=>{
+            queryClient.invalidateQueries({queryKey: [`profile`]})
+        }
+    })
+
     return (
         <div className="w-[50vw] h-full overflow-hidden flex justify-center flex-col  gap-2 items-center absolute top-1/2 left-1/2 translate-[-50%]">
             {result && !list?.length  && (
@@ -49,7 +74,7 @@ export function Dice({setMessage, cb = ()=>{}}){
             </div>
             <motion.div 
             animate={(roll)?{rotate: [`0deg`, `360deg`]}:{}}
-            transition={{repeat: Infinity, ease: `linear`}}
+            transition={{repeat: Infinity, duration: 2, ease: `linear`}}
             onClick={()=>{
                 if(list.length>=6) {setMessage({message:`You can only have 6 items`, type:`error`}); return}
                 clearTimeout(time[`current`])
@@ -69,7 +94,11 @@ export function Dice({setMessage, cb = ()=>{}}){
             
                 time[`current`] = setTimeout(()=>{
                     setroll(false)
-                       const index = randomIndex()
+                    const index = randomIndex()
+                    const id  = Math.random().toString(36).substring(2, 9)
+                    mutate({id, name: list[index].name, priority: list[index].priority})
+
+
                     setresult((list[index]))
                     cb(list[index || 0])
                     setlist([])

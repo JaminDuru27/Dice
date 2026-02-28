@@ -1,20 +1,40 @@
 import { motion } from "framer-motion";
 import { CheckCircle, CheckCircle2Icon, Circle, CircleCheck, CircleIcon, Clock10, Dice2, Dice3, Dice4, Dice6, List, Plus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { data, useSearchParams } from "react-router-dom";
+import { GetProject } from "../../utils/getProject";
 
 export function Todo({setMessage}) {
-    return (
+    const [project, setProject] = useState(null)
+    const [searchParams] = useSearchParams();
+    const name = searchParams.get('name');
+    const id = searchParams.get('id');
+
+    useEffect(()=>{
+        const t = setTimeout(()=>{
+            GetProject(id).then(data=>{
+                if(data.success){
+                    setProject(data.project)
+                }
+            })
+        }, 100)
+        return ()=> clearTimeout(t)
+    },[])
+    
+    return !project?<></> :
+    (
         <div className="w-full h-full flex flex-col gap-4 justify-start items-start">
             <div 
             style={{
                 backgroundImage: `linear-gradient(90deg, #08dcc6, #e73ae7)`,
+                
                 WebkitBackgroundClip:`text`,
                 backgroundClip: `text`,
                 color: `transparent`,
                 WebkitTextFillColor: `transparent`
             }}
             className=" flex gap-2 justify-center items-center text-6xl font-bold text-white"> 
-                Running
+                {project.name}
                 {<Dice3 size={50}/>}</div>
             <div className="todo relative w-full h-full rounded-sm b p-4 flex flex-col gap-4">
                 <div 
@@ -34,11 +54,11 @@ export function Todo({setMessage}) {
                         <div className="circle rounded-full w-190 h-90 bg-indigo-700/20 blur-[160px] absolute"></div>
                         <div className="circle rounded-full w-190 h-190 bg-cyan-700/20 blur-[160px] top-64 absolute"></div>
                     </div>
-                    <ListItem time={`10:20pm`} date={`12/08/26`} title={`Start Joffing`} descr={`dow iwhiq wy`} completed={true}/>
-                    <ListItem time={`10:20pm`} date={`12/08/26`} title={`Start Joffing`} descr={`dow iwhiq wy`} completed={true}/>
-                    <ListItem time={`10:20pm`} date={`12/08/26`} title={`Start Joffing`} descr={`dow iwhiq wy`} completed={true}/>
-                    <ListItem time={`10:20pm`} date={`12/08/26`} title={`Start Joffing`} descr={`dow iwhiq wy`} completed={true}/>
-                    <ListItem time={`10:20pm`} date={`12/08/26`} title={`Start Joffing`} descr={`dow iwhiq wy`} completed={true}/>
+                    {project.todos.map((item, k)=>{
+                        return (
+                            <ListItem key={k} time={item.dueDate} date={item.dueTime} title={item.title} descr={item.description} completed={item.completed}/>
+                        )  
+                    })}
                     <div className="addlist border-2 text-white border-white/90 rounded-2xl p-4 flex flex-col gap-4">
                         <div className="flex w-full gap-2 justify-between">
                             <input type="time" className="time w-1/2" />

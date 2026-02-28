@@ -1,6 +1,10 @@
 import mongoose, { Mongoose } from 'mongoose'
 import bcrypt from 'bcryptjs'
 import { ProjectSchema } from './projectModel.js'
+const arrayValidator = {
+    validator: v => Array.isArray(v),
+    message: props => `${props.path} must be an array`
+};
 const userSchema = new mongoose.Schema({
     username:{
         type: String,
@@ -21,7 +25,7 @@ const userSchema = new mongoose.Schema({
             fontsize: {
                 type: Number,
                 default: 100,
-                min: [50, `Font Size must be at least 50%`],
+                min: [0, `Font Size must be at least 50%`],
                 max: [200, `Font Size can't be more than 200%`]
             },
             keyboardnav: {
@@ -40,11 +44,50 @@ const userSchema = new mongoose.Schema({
             linespacing: {  
                 type: Number,
                 default: 100,
-                min: [50, `Line Spacing must be at least 50%`],
+                min: [0, `Line Spacing must be at least 50%`],
                 max: [200, `Line Spacing can't be more than 200%`]
             }
         },
         default: {}
+    },
+    contacts:{
+        type: [Object],
+        default: [],
+        validate: arrayValidator
+    },
+    currentGroup: {
+        type: String,
+        default: null
+    },
+    groups:{
+        type: [{
+            name: {
+                type: String,
+                required: [true, `Group Name is Required`],         
+                trim: true,
+                minlength: [3, `Group Name must be at least 3 characters`]
+            },
+            id: {
+                type: String,
+                required: [true, `Group Id is Required`],
+                trim: true,
+                minlength: [3, `Group Id must be at least 3 characters`]
+            },  
+            members: {
+                type: [Object],
+                default: [],        
+                validate: arrayValidator
+            }
+        }],
+        default: [],
+    },
+    badges: {
+        type: [String],
+        default: [],
+    },
+    remarks: {
+        type: [String],
+        default: [],
     },
     userUniqueId:{
         type: String,
@@ -97,6 +140,13 @@ userSchema.methods.toPublicProfile = function(){
         // there is no dedicated email field; expose unique id instead
         userUniqueId: this.userUniqueId,
         username: this.username,
+        lastLogin: this.lastLogin,
+        settings: this.settings,
+        groups: this.groups,
+        contacts: this.contacts,
+        badges: this.badges,
+        remarks: this.remarks,
+        createdAt: this.createdAt,
     }
 }
 

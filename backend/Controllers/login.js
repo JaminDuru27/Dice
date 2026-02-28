@@ -34,10 +34,10 @@ export async function Login(req, res){
 
         // Generate JWT Token
         const token = jwt.sign({
-            userId: user.id, userUniqueId: userUniqueId
+            userId: user._id, userUniqueId: userUniqueId
         },
         process.env.JWT_SECRET,
-        {expiresIn: `2hrs`}
+        {expiresIn: `1d`}
         ) 
         res.cookie(`access_token`, token,{
             httpOnly: true,

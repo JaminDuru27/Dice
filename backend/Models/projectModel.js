@@ -13,6 +13,13 @@ export const ProjectSchema = new mongoose.Schema({
         trim: true,
         minlength: [3, `Project Name must be at least 3 characters`]
     },
+    projectId:{
+        type: String,
+        required: [true, `Project Id is Required`],
+        trim: true,
+        minlength: [3, `Project Id must be at least 3 characters`],
+        unique: [true, `Project Id must be unique`]
+    },
     todos:{
         type: [{
             title: {
@@ -42,37 +49,6 @@ export const ProjectSchema = new mongoose.Schema({
         default: [],
         validate: arrayValidator
     },
-    contacts:{
-        type: [Object],
-        default: [],
-        validate: arrayValidator
-    },
-    currentGroup: {
-        type: String,
-        default: null
-    },
-    groups:{
-        type: [{
-            name: {
-                type: String,
-                required: [true, `Group Name is Required`],         
-                trim: true,
-                minlength: [3, `Group Name must be at least 3 characters`]
-            },
-            id: {
-                type: String,
-                required: [true, `Group Id is Required`],
-                trim: true,
-                minlength: [3, `Group Id must be at least 3 characters`]
-            },  
-            members: {
-                type: [Object],
-                default: [],        
-                validate: arrayValidator
-            }
-        }],
-        default: [],
-    },
     description:{
         type: String,
         trim: true,
@@ -94,9 +70,8 @@ export const ProjectSchema = new mongoose.Schema({
 })
 
 // update timestamp on save
-ProjectSchema.pre('save', function(next){
+ProjectSchema.pre('save', function(){
     this.updatedAt = new Date()
-    next()
 })
 
 // export model for convenience when working with standalone projects
