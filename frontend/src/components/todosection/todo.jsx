@@ -1,29 +1,49 @@
 import { motion } from "framer-motion";
 import { CheckCircle, CheckCircle2Icon, Circle, CircleCheck, CircleIcon, Clock10, Dice2, Dice3, Dice4, Dice6, List, Plus } from "lucide-react";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { data, useSearchParams } from "react-router-dom";
 import { GetProject } from "../../utils/getProject";
+import { AddToList } from "./addtodo";
+import { ListItem } from "./listitem";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-export function Todo({setMessage}) {
-    const [project, setProject] = useState(null)
+export function Todo({setMessage, profile}) {
+    const [refresh, setRefresh] = useState(false)
+    const [alert, setAlert] = useState(null)
     const [searchParams] = useSearchParams();
     const name = searchParams.get('name');
     const id = searchParams.get('id');
-
-    useEffect(()=>{
-        const t = setTimeout(()=>{
-            GetProject(id).then(data=>{
-                if(data.success){
-                    setProject(data.project)
-                }
-            })
-        }, 100)
-        return ()=> clearTimeout(t)
-    },[])
-    
-    return !project?<></> :
-    (
+    const fn = async ()=>{
+        try{
+            const res = GetProject(id)
+            const data = await res
+            return data.project
+        }catch(err){
+            console.error(err)
+        }
+    }
+    const {isLoading, error, data} = useQuery({
+        queryFn: fn,
+        queryKey: [`todolist`],
+        staleTime: 5000,
+        refetchOnWindowFocus: false,
+        retry: 1,
+    })
+    if(isLoading)return <>Loading..</>
+    if(error)return <>Error..</>
+    const project = data
+    const getPerc = ()=>{
+        const p = 100/(project.todos.filter(e=>e.completed).length)
+        return p===Infinity?0:p
+    }
+    const completed = (project)=>{
+        return project.percentageCompletion >= 100
+    }
+    const getProject = ()=>project
+        
+    return (
         <div className="w-full h-full flex flex-col gap-4 justify-start items-start">
+            <Time getProject={getProject} setAlert={setAlert}/>
             <div 
             style={{
                 backgroundImage: `linear-gradient(90deg, #08dcc6, #e73ae7)`,
@@ -34,77 +54,80 @@ export function Todo({setMessage}) {
                 WebkitTextFillColor: `transparent`
             }}
             className=" flex gap-2 justify-center items-center text-6xl font-bold text-white"> 
-                {project.name}
                 {<Dice3 size={50}/>}</div>
             <div className="todo relative w-full h-full rounded-sm b p-4 flex flex-col gap-4">
                 <div 
                 style={{}}
-                className="text-blue-600 flex items-center gap-2">Youre Almost There {<Clock10/>}</div>
+                className={`${!completed(project)?`text-blue-600`:`text-amber-500`} flex items-center gap-2`}>Youre Almost There {<Clock10/>}</div>
                 <div 
-                className="bar w-full rounded-2xl border-2 border-white/20 overflow-hidden">
+                className="bar w-full rounded-2xl border-2 border-white/20 relative overflow-visible">
+                    <div className="bg-red  top-0 left-0 w-full z-10"></div>
                     <motion.div 
-                    animate={{width: `100%`}}
+                    animate={{width: `${project.percentageCompletion}%`}}
                     transition={{duration: 1}}
-                    style={{backgroundImage: `linear-gradient(90deg, #08dcc6, #e73ae7)`}}
-                    className="lev w-[40%] rounded-lg shadow-2xs h-2 bg-purple-700"></motion.div>
+                    style={{backgroundImage:`${!completed(project)?`linear-gradient(90deg, #08dcc6, #e73ae7)`:`linear-gradient(90deg, gold, yellow)`}`}}
+                    className="lev  rounded-lg shadow-2xs h-2 bg-purple-700"></motion.div>
                 </div>
-                <div className="list  g-[#888383db]/20 backdrop-blur-2xl border-1 border-white/20 relative shadow-2xl  w-full h-fit gap-8 rounded-lg b p-4  py-10 flex flex-col ">
-                    <div className="designs z-[-1] w-full h-full absolute overflow-hidden top-0 left-0 rounded-lg">
-                        <div className="circle rounded-full w-90 h-190 bg-violet-700/20 blur-[160px] top-10 right-28 absolute"></div>
-                        <div className="circle rounded-full w-190 h-90 bg-indigo-700/20 blur-[160px] absolute"></div>
-                        <div className="circle rounded-full w-190 h-190 bg-cyan-700/20 blur-[160px] top-64 absolute"></div>
-                    </div>
+                <div className={`list ${completed(project) ? `bg-amber-300/60 text-amber-200`:`text-white`}     border-1 border-white/20 relative shadow-2xl  w-full h-fit gap-8 rounded-lg b p-4  py-10 flex flex-col `}>
+                    {
+                        !completed(project) &&(
+                            <div className="designs z-[-1] w-full h-full absolute overflow-hidden top-0 left-0 rounded-lg">
+                                <div className="circle rounded-full w-90 h-190 bg-violet-700/20 blur-[160px] top-10 right-28 absolute"></div>
+                                <div className="circle rounded-full w-190 h-90 bg-indigo-700/20 blur-[160px] absolute"></div>
+                                <div className="circle rounded-full w-190 h-190 bg-cyan-700/20 blur-[160px] top-64 absolute"></div>
+                            </div>
+                        )
+                    }
                     {project.todos.map((item, k)=>{
                         return (
-                            <ListItem key={k} time={item.dueDate} date={item.dueTime} title={item.title} descr={item.description} completed={item.completed}/>
+                            <ListItem setRefresh={setRefresh} data={item} setMessage={setMessage} projectid={id} listid={item._id}  key={k} time={item.dueDate} date={item.dueDate} title={item.title} descr={item.description} completed={item.completed}/>
                         )  
                     })}
-                    <div className="addlist border-2 text-white border-white/90 rounded-2xl p-4 flex flex-col gap-4">
-                        <div className="flex w-full gap-2 justify-between">
-                            <input type="time" className="time w-1/2" />
-                            <input required type="text" className="input w-1/2 p-2 rounded-2xl border-2 border-white/90" placeholder="Add todo item"/>
-                        </div>
-                        <div className="flex flex-col sm:flex-row gap-2 justify-between items-center w-full">
-                            <textarea name="description" className="w-full sm:w-1/2 border-2 border-white/90 p-2 text-[.8rem] rounded-2xl" id="description"></textarea>
-                            <button className="addbtn w-full sm:w-fit bg-gradient-to-r px-4 justify-center  cursor-pointer from-blue-500 to-indigo-700  p-2 outline-2 outline-offset-2 outline-indigo-700  rounded-2xl bg- flex items-center gap-2">Add {<Plus/>}</button>
-                        </div>
-                    </div>
+                    <AddToList profile={profile} name={name} id={project._id} onAdd={(data)=>{}} setMessage={setMessage}/>
                 </div>
             </div>
         </div>
     )
 }
 
-export function ListItem({date, time, title, descr, completed, completedChange=()=>{}}){
-    const [open, setopen] = useState(false)
-    const [comp, setcomp] = useState(completed)
+
+
+export function Time({setAlert, getProject}){
+    const [t, sett] = useState(0)
+    useEffect(()=>{
+        const interval = setInterval(()=>{
+            const project = getProject()
+            if(project){
+                project.todos.forEach(todo=>{
+
+                })
+            }
+            const date = new Date()
+
+            let hours = date.getHours()
+            const minutes = date.getMinutes()
+            const ampm = hours >= 12 ? "AM" : "PM"
+
+            hours = hours % 12
+            hours = hours || 12
+            const string = `${hours}:${minutes} ${ampm}`
+            sett(string)
+        },1000)
+        return ()=>{clearInterval(interval)}
+    },[])
     return (
-        <motion.div 
-        animate={{opacity:[0,1], translateY:[10, 0]}}
-        transition = {{duration:1}}
-        className="list p-2 border-white/60 relative border bg-white/10 gap-2 rounded-2xl flex p-4">
-            <div className="text-white capitalize w-full">
-                <div className="tile absolute top-0 translate-y-[-120%] left-2 text-[.6rem]  capitalize">
-                    {time}, {date}
-                </div>
-                <div className="title">{title}</div>
-                <motion.div 
-                onClick={()=>{setopen(p=>!p)}}
-                animate={open?{height: `fit-content`}:{height:`1.5rem`}}
-                className="descr overflow-hidden p-2 relative text-white/80 mt-2  text-[.7rem]">
-                <div className={`w-1 h-full  absolute left-[-2px] top-1/2 translate-y-[-50%] rounded-sm bg-white/50`}></div>    
-                    {descr}
-                </motion.div>
-            </div>
-            <motion.div 
-            whileTap={{scale:.7}}
-            onClick={()=>{
-                setcomp(p=>!p)
-                completedChange(comp)
-            }}
-            className="check cursor-pointer h-fit text-white">
-                {comp?<CheckCircle/>: <CircleIcon/>}
-            </motion.div>
+        <div 
+        style={{textShadow:`0px 0px 12px blue , 2px 3px 12px green`}}
+        className="text-[#2f37ff] text-[3.2rem] text-center w-full mt-4 ">{t}</div>
+    )
+}
+
+export function Alert({alert,setAlert}){
+    return (
+        <motion.div
+        className="absolute top-1/2 left-1/2 z-20 bg-amber-400 translate-[-50%]"
+        >
+            kdkdo
         </motion.div>
     )
 }

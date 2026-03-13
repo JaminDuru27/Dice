@@ -1,9 +1,9 @@
 import { LazyMotion, motion } from "framer-motion"
 import { AArrowUpIcon, ALargeSmall, Keyboard, KeyboardIcon, LetterText, MoveLeftIcon, Ruler } from "lucide-react"
-import { UpdateSettings } from "../../../utils/updateSettings"
+import { Patch} from "../../../utils/patch"
 import { useRef } from "react"
 
-export function AccesibilityMenu({info, accessibility, setAccessibility}){
+export function AccesibilityMenu({info, accessibility, setMessage, setAccessibility}){
     const themes  = [
         {name:`light`, color: `white`}, 
         {name:`dark`, color: `black`}, 
@@ -39,14 +39,13 @@ export function AccesibilityMenu({info, accessibility, setAccessibility}){
             <div className="options border-2 flex justify-start items-start gap-4 h-fit max-h-40 overflow-y-auto scrolly flex-wrap my-4 border-black/20 rounded-2xl p-4">
                 <Btn cb={()=>{
                     temp[`current`].fontsize = (temp[`current`].fontsize + 20) % 200
-                    console.log(temp[`current`].fontsize)
-                    UpdateSettings(temp[`current`], `settings`).then((profile)=>{
+                    Patch(setMessage, temp[`current`], `settings`).then((profile)=>{
                         updateAccessibility(profile.settings)
                     })
                 }} elem={<ALargeSmall size={25}/>}  on={accessibility?.fontsize} name={`font-size`}/>
                 <Btn cb={()=>{
                     temp[`current`].linespacing = (temp[`current`].linespacing + 20) % 200
-                    UpdateSettings(temp[`current`]).then((profile)=>{
+                    Patch(setMessage, temp[`current`]).then((profile)=>{
                         updateAccessibility(profile.settings)
                     })
                     // setAccessibility(p=>({...p, linespacing: (p.linespacing + 20) % 200,}))
@@ -54,21 +53,21 @@ export function AccesibilityMenu({info, accessibility, setAccessibility}){
 
                 <Btn cb={()=>{
                     temp[`current`].keyboardnav = !temp[`current`].keyboardnav
-                    UpdateSettings(temp[`current`]).then((profile)=>{
+                    Patch(setMessage, temp[`current`]).then((profile)=>{
                         updateAccessibility(profile.settings)
                     })
                     // setAccessibility(p=>({...p, fontsize: !p.fontsize}))
                 }} elem={<KeyboardIcon size={25}/>} on={accessibility?.keyboardnav} name={`Keyboard navigate`}/>
                 <Btn cb={()=>{
                     temp[`current`].reducedmotion = !temp[`current`].reducedmotion
-                    UpdateSettings(temp[`current`]).then((profile)=>{
+                    Patch(setMessage, temp[`current`]).then((profile)=>{
                         updateAccessibility(profile.settings)
                     })
                     // setAccessibility(p=>({...p, reducedmotion: !p.reducedmotion}))
                 }} elem={<MoveLeftIcon size={25}/>} on={accessibility?.reducedmotion} name={`Reduced Motion`}/>
                 <Btn cb={()=>{
                     temp[`current`].dislexicfont = !temp[`current`].dislexicfont
-                    UpdateSettings(temp[`current`]).then((profile)=>{
+                    Patch(setMessage, temp[`current`]).then((profile)=>{
                         updateAccessibility(profile.settings)
                     })
                     // setAccessibility(p=>({...p, dislexicfont: !p.dislexicfont}))

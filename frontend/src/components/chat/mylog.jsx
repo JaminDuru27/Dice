@@ -1,63 +1,112 @@
 import { motion } from "framer-motion"
-import { Send } from "lucide-react"
+import { Link2, Send, Share2 } from "lucide-react"
 import { useState } from "react"
-
-export function MyLog({text, by, key, time, status}){
+const globalLinkId = `jij282d811iJ32jjd`
+export function MyLog({text, by, onReactPress, onSeen, key, time, status,reactions=[]}){
     const colored = `animate-fade-in-up bg-gradient-to-r from-blue-500 to-indigo-700 text-white p-2 rounded-2xl w-fit`
     const [hovered , setHovered] = useState(false)
+    const texts = text.split(` `)
+    
+
     return (
         <div 
         key={`k3030k0r032,${key}`}
         className="w-full h-fit flex justify-end  relative">
-            <motion.div 
+            <motion.div
+                 
                 onHoverStart={()=>{setHovered(true)}}
                 onHoverEnd={()=>{setHovered(false)}}
+                onViewportEnter={()=>{
+                    onSeen()
+                }}
                 whileInView ={{opacity: [0, 1], translateY:[50, 0]}}
                 transition={{delay: 0.1 * key}}
                 initial={{opacity: 0, translateY: 50}}
                 animate={{opacity: [0, 1], translateY:[50, 0]}}
                 className={`flex  items-center relative top-0  right-0 w-fit justify-end h-fit gap-2 `}>
-                    <div className="reactions w-fit p-2 rounded-2xl h-5 bg-white/20"></div>
-
+                    <div className="reactions w-fit  p-2 rounded-2xl flex items-center max-w-[40vw] gap-2 flex-wrap max-h-20 overflow-y-auto scrolly bg-white/20">
+                        {reactions.map((r,k)=>{
+                            return (
+                                <div 
+                                key={`kk2]kuu98n21n2u${k}88`}
+                                className="">{r.emoji}</div>
+                            )
+                        })}
+                    </div>
                     <div 
                     style={{boxShadow:`2px 2px 24px -14px black`}}
+                    onClick={(e)=>{
+                        onReactPress(e.target)
+                    }}
                     className="relative p-1 px-1 sm:p-2 sm:px-4 rounded-2xl bg-white/20 w-fit  overflow-hidden border border-white/20 text-[.8rem] ">
-                        <div className="bgs w-full h-full absolute top-0 left-0 ">
-                            {[1,2,3, 4, 5,].map((e, i)=>{
-                                const randcolors = [`bg-pink-600/40`, `bg-purple-600/40`, `bg-indigo-600/40`, `bg-violet-800-600/40`, `bg-fuchsia-600/40`]
-                                const randpos = [
-                                    {top: "4", left: "4"},
-                                    {top: "8", left: "8"},
-                                    {top: "12", left: "12"},
-                                    {top: "16", left: "16"},
-                                    {top: "20", left: "20"}
-                                ] 
-                                const randSize = [`w-10`, `w-20`, `w-30`, ]                       
-                                const randYDir = [`top`, `bottom`]
-                                const randXDir = [`left`, `right`]
-                                const colors = randcolors.sort(()=> Math.random() - 0.5)
-                                const pos = randpos.sort(()=> Math.random() - 0.5)  
-                                const rx = randXDir[Math.floor(Math.random() * randXDir.length)]
-                                const ry = randYDir[Math.floor(Math.random() * randYDir.length)]
-                                const size = randSize[Math.floor(Math.random() * randSize.length)]
+                        <BGS/>
+                        <div 
+                        
+                        className="message text-white z-10 text-[50%] sm:text-[80%] md:text-[100%] ">{
+                            texts.map((word,k)=>{
+                                const cb = ()=>{}
+                                let w = word
+                                let type = `link`
+                                const split = word.split(`-`)
+                                if(split.length > 1 && String(split[0]) === `${globalLinkId}`){
+                                }
                                 return (
-                                    <div 
-                                    key={`kkpkj3g9u3${i}`}
-                                    className={`circle rounded-full blur-2xl ${colors[i]} absolute ${ry}-${pos[i].top} ${rx}-${pos[i].left}  ${size} h-20`}></div>
+                                    <span 
+                                    onClick = {()=>{cb}}
+                                    key={`33333332222233{ddd${k}`}
+                                    className={`${type === `link`?`border-b-2 border-b-red-300 text-red-400 cursor-pointer`:``} flex items-center gap-2`}
+                                    > 
+                                    {type === `link` && (
+                                        <div className="link w-3 h-3 text-white relative">{<Link2 className={`w-full h-full`}/>}</div>
+                                    )}
+                                    {w}</span>
                                 )
-                            })}
-                        </div>
-                        <div className="message text-white z-10 text-[50%] sm:text-[80%] md:text-[100%] ">{text}</div>
+                            })
+                        }</div>
                         {time && <div className="time text-end text-[.6rem] text-[50%] sm:text-[80%] md:text-[100%] text-white/60 uppercase">{time}</div>}
-                        <motion.div 
+                        <motion.div
+                         
                         animate={status && hovered?{height: [0, `fit-content`], opacity: 1}:{height: [`fit-content`, 0], opacity:0}}
                         className="time text-end text-[.6rem] text-[50%] sm:text-[80%] md:text-[100%] text-white/60 capitalize flex items-center gap-2">{<Send size={10}/>}{status}</motion.div>
                     </div>
-                    <div className="icon"> 
+                    <div 
+                    
+                    className="icon"> 
                         <div className="name rounded-full text-[50%] sm:text-[80%] md:text-[100%] bg-white/20 text-white p-2 w-8 h-8 flex items-center justify-center capitalize">{by.toLocaleLowerCase()}</div>
                     </div>
                             
                 </motion.div>
         </div>
+    )
+}
+
+export function BGS(){
+    return (
+    <div className="bgs w-full h-full absolute top-0 left-0 ">
+        {[1,2,3, 4, 5,].map((e, i)=>{
+            const randcolors = [`bg-pink-600/40`, `bg-purple-600/40`, `bg-indigo-600/40`, `bg-violet-800-600/40`, `bg-fuchsia-600/40`]
+            const randpos = [
+                {top: "4", left: "4"},
+                {top: "8", left: "8"},
+                {top: "12", left: "12"},
+                {top: "16", left: "16"},
+                {top: "20", left: "20"}
+            ] 
+            const randSize = [`w-10`, `w-20`, `w-30`, ]                       
+            const randYDir = [`top`, `bottom`]
+            const randXDir = [`left`, `right`]
+            const colors = randcolors.sort(()=> Math.random() - 0.5)
+            const pos = randpos.sort(()=> Math.random() - 0.5)  
+            const rx = randXDir[Math.floor(Math.random() * randXDir.length)]
+            const ry = randYDir[Math.floor(Math.random() * randYDir.length)]
+            const size = randSize[Math.floor(Math.random() * randSize.length)]
+            return (
+                <div 
+                key={`kkpkj3g9u3${i}`}
+                className={`circle rounded-full blur-2xl ${colors[i]} absolute ${ry}-${pos[i].top} ${rx}-${pos[i].left}  ${size} h-20`}></div>
+            )
+        })}
+    </div>
+
     )
 }

@@ -2,7 +2,7 @@
 
 @font-face {
     font-family: geoform;
-    src: url(/fonts/Geoform-Medium.otf);
+    src: url(/fonts/Kanit-Regular.woff);
 }
 @font-face {
     font-family: sakire;
@@ -25,4 +25,33 @@
 }
 body{
     overflow: hidden;
+}
+
+
+.box::after{
+      content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(to right, transparent, rgba(225, 225, 225, 0.5), transparent);
+}
+.scrolly::-webkit-scrollbar{
+    width: 5px;
+    margin-left: 2px;
+    background-color: rgba(225, 225, 225, 0.2);
+}
+.scrollx::-webkit-scrollbar, .scrolly::-webkit-scrollbar{
+    border-radius: 2px;
+}
+.scrolly::-webkit-scrollbar-thumb, .scrollx::-webkit-scrollbar-thumb{
+    background-color: rgba(220, 225, 225, 0.7);
+    border-radius: 2px;
+}
+.scrollx::-webkit-scrollbar{
+    height: 5px;
+    margin-top: 2px;
+    background-color: rgba(220, 225, 225, 0.2);
 }

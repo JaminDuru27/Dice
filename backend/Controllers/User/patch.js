@@ -1,18 +1,15 @@
 
-export async function UsersPatch(req, res, User){
+export async function UsersPatch(req, res, Method){
     try{
-        const {location, type} = req.query
-        const data  = req.body
+        const {location, type, arrayFilters, data} = req.body
         const userId = req.user.userId
         if (!userId){
             return res.status(401).json({
                 success: false,
                 message: `Unauthorized`
             })
-        }
-        
-        console.log(location, type, data)
-        const user = await User.findOneAndUpdate(
+        }     
+        const user = await Method.findOneAndUpdate(
             {_id: userId}, 
             {
                 [`$${type || 'set'}`]: {
@@ -20,12 +17,12 @@ export async function UsersPatch(req, res, User){
                 }
             }, 
             {
-                new: true,
+                arrayFilters: (arrayFilters || []),
+                returnDocument: `after`,
                 upsert: false,
                 runValidators: true
             }
         )
-
         await user.save()
 
         res.status(200).json({
@@ -35,6 +32,7 @@ export async function UsersPatch(req, res, User){
         })
 
     }catch(err){
+        console.log(err.message)
         res.status(500).json({
             success: false,
             message: err.message

@@ -1,12 +1,12 @@
 export async function AddProject(setMessage,data, location, type){
     const api = `http://localhost:3000`
     try{
-        const res = await fetch(`${api}/api/users/Users?location=${location}&type=${type}`, {  
+        const res = await fetch(`${api}/api/users/Users`, {  
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({...data}),
+            body: JSON.stringify({data:{...data}, location, type}),
             credentials: 'include' // Send cookies with request
         })
         const d = await res.json()

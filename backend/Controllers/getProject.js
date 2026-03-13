@@ -13,6 +13,7 @@ export async function GetProject(req,res){
             return res.status(404).json({ error: "User not found" })
         }
         const project = user.projects.find(p => p.projectId === projectId)
+
         if (!project) {
             return res.status(404).json({ error: "Project not found" })
         }

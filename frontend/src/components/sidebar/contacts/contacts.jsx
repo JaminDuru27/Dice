@@ -1,23 +1,70 @@
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Dice3, MessageCircleDashed, PlusIcon, Users2 } from "lucide-react";
+import { Dice3, MessageCircleDashed, PlusIcon, Search, SearchIcon, Users2 } from "lucide-react";
 import { useState } from "react";
-export function Contacts(){
+import { useNavigate } from "react-router-dom";
+export function Contacts({profile,setShowSearch, accessibility, setAccessibility}){
+    const nav = useNavigate()
+
+    const fn = async()=>{
+        try{
+            const api =   `http://localhost:3000`
+            const res = await fetch(`${api}/api/users/getFriendsList`, {
+                method:`GET`,
+                headers:{
+                    'Content-Type': `application/json`
+                },
+                credentials: `include`
+            })
+            const data = await res.json()
+            console.log(`contacts`, data)
+            return data.data
+        }catch(err){console.error(err)}
+    }
+    const {data, isLoading, error} = useQuery({
+        queryFn: fn,
+        queryKey: [`contacts`],
+        staleTime: 5000,
+        refetchOnWindowFocus: false,
+        retry: 1,
+    })
+    if(isLoading)return<>Loading...</>
+    if(error)return<>Error...</>
     return (
         <div className="">
-            <div className="title">Contacts{<Users2 size={20}/>}</div>
+            <div className="title mb-2 flex w-full items-center justify-between">
+                <div className="flex gap-2 ">
+                    <div className="name capitalize">contacts</div>
+                    {<Users2 size={20}/>}
+                </div>
+                
+                <div 
+                onClick={()=>{
+                    setShowSearch(p=>true)
+                }}
+                className="search">
+                    {<SearchIcon size={20} color={`black`}/>}
+                </div>
+            </div>
             <div 
             style={{boxShadow: `0px 0px 18px -8px black inset  `}}
             className="groups  flex gap-2  relative  p-2 rounded-2xl overflow-x-auto scrollx">
                 <div 
+                onClick={()=>{
+                    setShowSearch(p=>true)
+                }}
                 className="group px-2 flex text-center   shrink-0 min-w-20 cursor-pointer drop-shadow-black/100 overflow-hidden drop-shadow-2xl w-fit bg-white/20 p-2 rounded-2xl  flex-row justify-center items-center gap-0"
                 >
                     Add New Contact {<PlusIcon size={20}/>}
 
                 </div>
-                <Contact key={0} name={`gergaubd`} cb={()=>{}}/>
-                <Contact key={1} name={`0983hfhji he8dj2j`} cb={()=>{}}/>
-                <Contact key={2} name={`9039293jfj2jfjhf9hhfh82`} cb={()=>{}}/>
-                <Contact key={3} name={`30fj9 d38h 302h3 28 d8 3`} cb={()=>{}}/>
+                {(data || []).map((f, key)=>{
+                    return (
+                        <Contact key={key} name={f?.username || ``} cb={()=>{
+                            nav(`/chat?type=1&ref=${f._id}`)
+                        }}/>
+                    )
+                })}                
             </div>
         </div>
     )

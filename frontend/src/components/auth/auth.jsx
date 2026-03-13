@@ -2,10 +2,12 @@ import { useState } from "react";
 import { Login } from "./login";
 import { Register } from "./register";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 
-export function Auth({setMessage}) {
+export function Auth({setMessage, setReload}) {
     const [authState, setAuthState] = useState(`login`)
     const nav = useNavigate()
+    const queryClient = useQueryClient()
     return (
         <div className="absolute top-0 left-0 text-white bg-black overflow-hidden flex justify-center items-center w-full h-full">
             <div className="">
@@ -34,6 +36,8 @@ export function Auth({setMessage}) {
                             if(d.success){
                                 setMessage({message: d.message, type:`info`})
                                 nav(`/`)
+                                queryClient.invalidateQueries({queryKey: [`profile`]})
+                                setReload(p=>!p)
                             }else{
                                 setMessage({message: d.message, type:`error`})
                             
@@ -63,6 +67,8 @@ export function Auth({setMessage}) {
                             const d = await res.json()
                             if(d.success){
                                 nav(`/`)
+                                queryClient.invalidateQueries({queryKey: [`profile`]})
+                                setReload(p=>!p)
                             }else {
                                 setMessage({message: d.message, type:`info`})
                             }

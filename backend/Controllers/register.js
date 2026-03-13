@@ -13,12 +13,15 @@ export async function Register(req, res){
                 message: `User with email and password exists`
             })
         }
-
+        const indexes = await User.collection.getIndexes()
+        // if(indexes)User.collection.dropIndex(`projects.projectId_1`)
+        // return
         const user = await User.create({
             username,
             userUniqueId,
             password
         })
+        
         user.createdAt = new Date() 
         res.status(201).json({
             success: true,
@@ -27,7 +30,6 @@ export async function Register(req, res){
         })
     }
     catch(err){
-        console.log(err.message)
         res.status(400).json({
             success: false,
             message: err.message

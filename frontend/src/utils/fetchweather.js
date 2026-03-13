@@ -1,16 +1,25 @@
-export function FetchWeather(){
+export async function FetchWeather(data){
     try{
         const api = `http://localhost:3000`
-        console.log(`Fetching weather data...`)
-        const res = fetch(`${api}/api/weather`, {
+        const url = `${api}/api/users/weather${data?`?lonp=${data.lon}&latp=${data.lat}`:``}`
+        const res = await fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             credentials: 'include' // Send cookies with request 
         })
-        const data = res.json()
-        return data
+        if (!res.ok) {
+            const text = await res.text()
+            console.log(text)
+            return false
+        }
+        const d = await res.json()
+        if(d.success){
+            return d.data
+        }else {
+            console.error(d.message)
+        }
     }catch(err){
         console.error(err)
     }

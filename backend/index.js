@@ -8,9 +8,38 @@ import dotenv from 'dotenv'
 dotenv.config()
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
+import { VerifyToken } from './Middlewares/verifyToken.js';
+import { SocketRoutes } from './Sockets/userSocketRoute.js';
 const app  = express();
 const httpServer = createServer(app);
-// const io = new Server(httpServer, { cors: { origin: '*' } });
+export const io = new Server(httpServer, { cors: { origin: [
+  'http://localhost:5173'
+] } });
+
+export const getIO = () => {
+  if (!io) throw new Error("Socket.io not initialized");
+  return io;
+};
+export const Users = []
+
+io.on('connection', (socket) => {
+  console.log(`socket connected`, socket.id)
+  socket.on('disconnect', () => {
+      for (const userId in Users) {
+        if (Users[userId] === socket.id) {
+          delete Users[userId];
+          break;
+        }
+      }
+      console.log('user disconnected', Users);
+    })
+    socket.on("register-user", (userId) => {
+      Users[userId] = socket.id;
+      socket.emit(`registered-user-successfully`, userId)
+    });
+    SocketRoutes(socket, io)
+});
+
 
 app.use(cookieParser())
 app.use(cors({

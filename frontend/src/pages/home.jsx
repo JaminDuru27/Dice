@@ -6,15 +6,18 @@ import { SideBar } from "../components/sidebar/sidebar"
 import { GetProfile } from "../utils/getProfile"
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
+import { Notifications } from "../components/notifications/notificatitons"
 
-export function Home({data, setMessage, profile, accessibility, setAccessibility, setOpenAcct, openAcct, setOpenSide, openSide}){
+export function Home({setMessage,data,setShowSearch, openNotification, setOpenNotification, profile, accessibility, setAccessibility, setOpenAcct, openAcct, setOpenSide, openSide}){
     const nav = useNavigate()
     const [p, setProfile] = useState(profile)
     return(
         <>
-        <Navbar profile={profile} onbarclick={()=>{setOpenSide(p=>!p)}} onprofileclick={()=>{setOpenAcct(p=>!p)}} />
+        <Navbar onnotificationclick={()=>{setOpenNotification(p=>!p);setOpenAcct(false)}} setShowSearch={setShowSearch} profile={data} onbarclick={()=>{setOpenNotification(false);setOpenSide(p=>!p)}} onprofileclick={()=>{setOpenAcct(p=>!p)}} />
         <Acct profile={profile} setOpenAcct={setOpenAcct} openAcct ={openAcct}/>
-        <SideBar profile={profile} accessibility={accessibility} setAccessibility={setAccessibility} openSide={openSide} setOpenSide={setOpenSide}/>
+        <Notifications setMessage={setMessage} profile={data} setOpenNotification={setOpenNotification} openNotification ={openNotification}/>
+        
+        <SideBar setMessage={setMessage} setShowSearch={setShowSearch} profile={profile} accessibility={accessibility} setAccessibility={setAccessibility} openSide={openSide} setOpenSide={setOpenSide}/>
         <Dice setMessage={setMessage} />
         </>
     )

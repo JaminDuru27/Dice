@@ -1,14 +1,141 @@
 import { motion } from "framer-motion";
-import { Dice3, DoorClosedIcon, DoorOpenIcon, DropletsIcon, Keyboard, Send} from "lucide-react";
-import { useState } from "react";
+import { Dice3, DoorClosedIcon, DoorOpenIcon, DropletsIcon, Keyboard, Plus, Send, Smile} from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { MyLog } from "./mylog";
 import { Log } from "./log";
-import { useNavigate } from "react-router-dom";
-
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { socket } from "../../App";
+// import EmojiPicker from 'emoji-picker-react'
+import emojisdata from "@emoji-mart/data"
+import { Input } from "./input";
+import { EmojiMin } from "./emojiPicker/emojiReact";
 export function Chat(){
     const nav = useNavigate()
+    const [query] = useSearchParams()
+    const type  = query.get('type')
+    const ref  = query.get('ref')
+    const [showEmoji, setShowEmoji] = useState(false)
+    const [emojiPicker,setEmojiPicker] = useState(false)
+    useEffect(()=>{
+        socket.on(`update-chat`,()=>{
+            queryclient.invalidateQueries([`chat`])
+        })
+        return ()=>{socket.off(`update-${ref}-chat`)}
+        
+    },[])
+    const fn = async()=>{
+        try{
+            const api =   `http://localhost:3000`
+            const res = await fetch(`${api}/api/users/getConversations?id=${ref}&type=${type}`, {
+                method:`GET`,
+                headers:{
+                    'Content-Type': `application/json`
+                },
+                credentials: `include`
+            })
+            const data = await res.json()
+            return data 
+        }catch(err){console.error(err)}
+    }
+    const {isLoading, error, data} = useQuery({
+        queryKey:[`chat`],
+        queryFn: fn,
+        staleTime: 5000,
+        refetchOnWindowFocus: false,
+        retry: 1,
+    })
+    
+    const mfn = async (message, convoId)=>{
+        try{
+            const api =   `http://localhost:3000`
+            const res = await fetch(`${api}/api/users/updateConversation`, {
+                method:`PATCH`,
+                headers:{
+                    'Content-Type': `application/json`
+                },
+                body:JSON.stringify({
+                    id:ref,
+                    type,
+                    message,
+                    reactions: [],
+                }),
+                credentials: `include`
+            })
+            const data = await res.json()
+            return data.data
+        }catch(err){console.error(err)}
+    }
+    const queryclient = useQueryClient()
+    const ssenfn = async (id)=>{
+        try{
+            const ddd = `seen`
+            const convoId = data.data._id
+            const location = `list.$[l].status`
+            const type = `set`
+            const arrayFilters = [{'l._id':id}]
+            const api =   `http://localhost:3000`
+            const res = await fetch(`${api}/api/users/Convo`, {
+                method:`PATCH`,
+                headers:{
+                    'Content-Type': `application/json`
+                },
+                body:JSON.stringify({data:ddd, convoId, location, type, arrayFilters}),
+                credentials: `include`
+            })
+            const d = await res.json()
+            return d.data
+        }catch(err){console.error(err)}
+    }
+    const reactfn = async ({id, e})=>{
+        try{
+            const ddd =  {emoji:e, from: data.userId}
+            const convoId = data.data._id
+            const location = `list.$[l].reactions`
+            const type = `push`
+            const arrayFilters = [{'l._id':id}]
+            const api =   `http://localhost:3000`
+            const res = await fetch(`${api}/api/users/Convo`, {
+                method:`PATCH`,
+                headers:{
+                    'Content-Type': `application/json`
+                },
+                body:JSON.stringify({data:ddd, convoId, location, type, arrayFilters}),
+                credentials: `include`
+            })
+            const d = await res.json()
+            return d.data
+        }catch(err){console.error(err)}
+    }
+    const convomutation = useMutation({
+        mutationFn: mfn,
+        onSuccess: ()=>{
+            queryclient.invalidateQueries([`chat`])
+        }
+    })
+    const seenMutation = useMutation({
+        mutationFn: ssenfn,
+        onSuccess: ()=>{
+            queryclient.invalidateQueries([`chat`])
+        }
+    })
+    const reactMutation = useMutation({
+        mutationFn: reactfn,
+        onSuccess: ()=>{
+            queryclient.invalidateQueries([`chat`])
+        }
+    })
+    const textref = useRef(null)
+    if(isLoading)return <>Loading/..</>
+    if(error)return <>Error</>
+    const min  = [`joy`, `blush`, `innocent`, `yum`, `zanny-face`,`100`, `smirk`, `unamused`, `relieved`,`pensive`,`sleeping`,`exploding_head`]
     return (
         <>
+        {
+            showEmoji &&
+        <EmojiMin show={showEmoji} ref={textref} setShow={setShowEmoji} list={min} />
+
+        }
         <div
         onClick={()=>{
             nav(`/`)
@@ -20,51 +147,61 @@ export function Chat(){
         >
             <div className="flex items-center gap-2">
                 <div className="icon">{<Dice3/>}</div>
-            <div className="">Group Name</div>
+                {console.log(data)}
+            <div className="capitalize">{data?.refData?.username || data?.refData?.name}</div>
             </div>
 
             <div className="">{<DropletsIcon/>}</div>
         </div>
+        {console.log(data, `okoko`)}
         <div className="log w-full flex flex-col overflow-x-hidden overflow-y-auto scrolly gap-6 h-full text-white  p-2">
-            <Log by={`Ts`} text={`Hi welcome to my group`} time={`12:00 PM`} key={0} onSeen={()=>console.log("seen")} status={`delivered`}/>
-            <Log by={`OM`} text={`How are you?`} time={`12:01 PM`} key={1} onSeen={()=>console.log("seen")} status={`delivered`}/>
-            <Log by={`Pt`} text={`I am good, thanks for asking!`} time={`12:02 PM`} key={2} onSeen={()=>console.log("seen")} status={`delivered`}/>
-            <Log by={`OM`} text={`What about you?`} time={`12:03 PM`} key={3} onSeen={()=>console.log("seen")} status={`delivered`}/>
-            <Log by={`Ts`} text={`I am doing well too!`} time={`12:04 PM`} key={4} onSeen={()=>console.log("seen")} status={`delivered`}/>
-            <MyLog by={`Ts`} text={`I am doing well too!`} time={`12:04 PM`} key={0} status={`sent`}/>
-            <Log by={`Ts`} text={`I am doing well too!`} time={`12:04 PM`} key={8} onSeen={()=>console.log("seen")} status={`delivered`}/>
-            <Log by={`Ts`} text={`I am doing well too!`} time={`12:04 PM`} key={6} onSeen={()=>console.log("seen")} status={`delivered`}/>
-            <MyLog by={`Ts`} text={`I am doing well too!`} time={`12:04 PM`} key={0} status={`sent`}/>
-            <MyLog by={`Ts`} text={`I am doing well too!`} time={`12:04 PM`} key={3} status={`sent`}/>
-            <Log by={`Ts`} text={`I am doing well too!`} time={`12:04 PM`} key={4} onSeen={()=>console.log("seen")} status={`delivered`}/>
-            <MyLog by={`Ts`} text={`I am doing well too!`} time={`12:04 PM`} key={7} status={`sent`}/>
+            {(data?.data?.list || []).map((convo, k)=>{
+                const date = new Date(convo.date)
+                const time = date.toLocaleTimeString()
+                const name = convo?.sentBy.username[0]
+                const isMe = ()=>convo.sentBy._id === data.userId
 
-                {/* <div className="message bg-gradient-to-r from-blue-500 to-indigo-700 text-white p-2 rounded-2xl w-fit">Hello, how are you?</div> */}
+                // if(pre === `DT`){//todo}
+                return isMe()?
+                    <MyLog  
+                    onReactPress={(e)=>{
+                        setEmojiPicker({cb:(e)=>{
+                            reactMutation.mutate({id:convo._id, e})
+                        }})
+                    }}
+                    reactions={convo.reactions}
+                    by={name} text={convo.message} time={time} 
+                    key={k} onSeen={()=>{}} status={convo?.status}
+                    />
+
+                :(
+                    <Log
+                    type={type}
+                    onReactPress={(e)=>{
+                        setEmojiPicker({cb:(e)=>{
+                            reactMutation.mutate({id:convo._id, e})
+                        }})
+                    }}
+                    reactions={convo.reactions}
+                    by={name} text={convo.message} time={time} key={k} onSeen={()=>{
+                        seenMutation.mutate(convo._id)
+                    }} status={convo?.status}/>
+                )
+            })}
         </div>
         <Input
-        onSend= {()=>{}}
+        emojiPicker={emojiPicker}
+        setEmojiPicker={setEmojiPicker}
+        onSend= {(message)=>{
+            convomutation.mutate(message, ref,)
+        }}
         />
 
         </>
     )
 }
 
-export function Input(onSend = ()=>{}){
-    const [value, setValue] = useState(``)
-    return (
-        <div 
-        style={{boxShadow: `0px 0px 24px -12px black`}}
-        className="w-[80%] fixed bottom-10 flex text-[60%] md:text-[100%] justify-between items-center gap-2 left-1/2 translate-x-[-50%] rounded-2xl border-2 border-white/20 bg-black/40 text-white p-2 flex">
-            <div className="flex w-[70%] [items-center gap-2">
-                {<Keyboard/>}
-                <input 
-                className={` p-2 w-full`}
-                value={value} onInput={(e)=>{setValue(e.target.value)}} type="text" />
-            </div>
-            <div 
-            onClick={()=>{onSend(value); setValue(``)}}
-            className="send flex items-center gap-2  cursor-pointer bg-white/20 rounded-2xl p-2 ">Send {<Send size={18}/>}</div>
-        </div>
-    )
-}
+
+
+
 

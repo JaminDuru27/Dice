@@ -1,8 +1,28 @@
+import { QueryClient, useMutation } from "@tanstack/react-query"
 import { motion } from "framer-motion"
 import { Badge, Dice3, Star } from "lucide-react"
 
 export function Acct({openAcct,profile, setOpenAcct}){
-    console.log(profile)
+        const fn = async ()=>{
+        try{
+            const api = `http://localhost:3000`
+            const res = fetch(`${api}/api/users/logout`, {
+                method: "POST",
+                credentials: "include",
+            })
+            const data = await res.json()
+            return data
+        }catch(error){
+            console.log(error)
+        }
+    }
+    const queryClient = new QueryClient()
+    const mutation = useMutation({
+        mutationFn: fn,
+        onSuccess: ()=>{
+            queryClient.invalidateQueries([`profile`])
+        }
+    })
     return (
         <motion.div 
         animate={openAcct?{display:`block`, opacity: [0, 1]}:{display:`none`, opacity: [1, 0]}}
@@ -16,7 +36,11 @@ export function Acct({openAcct,profile, setOpenAcct}){
             </div>
             <div className="options flex gap-2 flex-col justify-center items-center my-2">
                 <div className="swi capitalize rounded-2xl cursor-pointer bg-white/20 w-fit p-2 border border-black/40 ">switch account</div>
-                <div className="swi capitalize rounded-2xl cursor-pointer bg-white/20 w-fit p-2 border border-black/40 ">Log Out</div>
+                <div 
+                onClick ={()=>{
+                    mutation.mutate()
+                }}
+                className="swi capitalize rounded-2xl cursor-pointer bg-white/20 w-fit p-2 border border-black/40 ">Log Out</div>
             </div>
             <div className="bades">
                 {profile?.badges?.length ? (

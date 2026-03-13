@@ -7,7 +7,7 @@ import { ClockSettings } from "./clock/clocksettings"
 import { Groups } from "./groups/groups"
 import { ProjectList } from "./ProjectLists/projectlist"
 import { Contacts } from "./contacts/contacts"
-export function SideBar({openSide, profile, setOpenSide, accessibility, setAccessibility}){
+export function SideBar({setShowSearch, setMessage, openSide, profile, setOpenSide, accessibility, setAccessibility, }){
     const style = ``
     const [d, setD] = useState(undefined)
     return (
@@ -22,10 +22,10 @@ export function SideBar({openSide, profile, setOpenSide, accessibility, setAcces
                     d?.name === `clocksettings`&& <ClockSettings accessibility={accessibility} setAccessibility={setAccessibility} />
                 }
                 {
-                    d?.name === `groups` && <Groups accessibility={accessibility} setAccessibility={setAccessibility} />
+                    d?.name === `groups` && <Groups accessibility={accessibility} setAccessibility={setAccessibility} setMessage={setMessage} />
                 }
                 {
-                    d?.name === `contacts` && <Contacts accessibility={accessibility} setAccessibility={setAccessibility} />
+                    d?.name === `contacts` && <Contacts profile={profile} setShowSearch={setShowSearch} accessibility={accessibility} setAccessibility={setAccessibility} />
                 }
             </SideMenuWrap>
         )}

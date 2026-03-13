@@ -17,8 +17,11 @@ export const ProjectSchema = new mongoose.Schema({
         type: String,
         required: [true, `Project Id is Required`],
         trim: true,
-        minlength: [3, `Project Id must be at least 3 characters`],
-        unique: [true, `Project Id must be unique`]
+        minlength: [3, `Project Id must be at least 3 characters`]
+    },
+    percentageCompletion: {
+        type: Number,
+        default: 0,
     },
     todos:{
         type: [{
@@ -72,6 +75,11 @@ export const ProjectSchema = new mongoose.Schema({
 // update timestamp on save
 ProjectSchema.pre('save', function(){
     this.updatedAt = new Date()
+    const total = this.todos.length;
+    const completed = this.todos.filter(t => t.completed).length;
+    const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+    this.percentageCompletion = percent === Infinity?0:percent
+    if(this.percentageCompletion >= 100)this.completed = true
 })
 
 // export model for convenience when working with standalone projects

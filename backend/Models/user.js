@@ -11,6 +11,17 @@ const userSchema = new mongoose.Schema({
         trim: true,
         minlength: [3, 'Username must be at least 3']
     },
+    online:{
+        type: Boolean,
+        default: false,
+    },
+    currentSocketId:{
+        type: String,
+    },
+    adminGroups: {
+        type: [String],
+        default: []
+    },
     settings:{
         type: {
             ringtoneId: {
@@ -50,8 +61,13 @@ const userSchema = new mongoose.Schema({
         },
         default: {}
     },
-    contacts:{
-        type: [Object],
+    blockedList:{
+        type: [String],
+        default: []
+    },
+    friendsList:{
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: `User`,
         default: [],
         validate: arrayValidator
     },
@@ -89,6 +105,17 @@ const userSchema = new mongoose.Schema({
         type: [String],
         default: [],
     },
+    projects:{
+        type: [ProjectSchema],
+        default: [],
+        validate:{
+            validator: function(v){
+                if (!Array.isArray(v)) return false
+                return true
+            },
+            message: props=> `something is wrong with the data `
+        }
+    },
     userUniqueId:{
         type: String,
         trim: true,
@@ -100,18 +127,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         minlength: [6, 'Password must be at least 6'],
         select: false,
-        required: [true, `Password is Required`]
-    },
-    projects:{
-        type: [ProjectSchema],
-        default: [],
-        validate:{
-            validator: function(v){
-                if (!Array.isArray(v)) return false
-                return true
-            },
-            message: props=> `something is wrong with the data `
-        }
+        required: [true, `Password is Required`],
     },
     createdAt:{
         type: Date,
@@ -139,6 +155,10 @@ userSchema.methods.toPublicProfile = function(){
         projects: this.projects,
         // there is no dedicated email field; expose unique id instead
         userUniqueId: this.userUniqueId,
+        friendsList: this.friendsList,
+        blockedList: this.blockedList,
+        online: this.online,
+        currentSocketId: this.currentSocketId,
         username: this.username,
         lastLogin: this.lastLogin,
         settings: this.settings,
@@ -147,7 +167,8 @@ userSchema.methods.toPublicProfile = function(){
         badges: this.badges,
         remarks: this.remarks,
         createdAt: this.createdAt,
+        _id: this._id
     }
 }
 
-export const User = mongoose.model('Dice', userSchema, `Users` )
+export const User = mongoose.model('User', userSchema, `Users` )
