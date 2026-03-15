@@ -24,6 +24,7 @@ import { Conversation } from '../Models/conversationModel.js'
 import { ConvoPatch } from '../Controllers/Convo/patch.js'
 import { PostGroup } from '../Controllers/Group/post.js'
 import { GetGroup } from '../Controllers/Group/get.js'
+import { Group } from '../Models/groupModel.js'
 export  const userRouter = express.Router()
 
 userRouter.post('/register', Register)

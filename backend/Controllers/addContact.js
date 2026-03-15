@@ -3,7 +3,7 @@ import { User } from "../Models/user.js"
 export async function AddContact(req, res){
     try{
         const userId = req.user.userId
-        const contactId = req.body
+        const contactId = req.body.id
         const user =  await User.findById(userId)
         if(!user){
             res.status(400).json({

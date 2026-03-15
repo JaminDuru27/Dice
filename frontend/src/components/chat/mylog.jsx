@@ -2,14 +2,14 @@ import { motion } from "framer-motion"
 import { Link2, Send, Share2 } from "lucide-react"
 import { useState } from "react"
 const globalLinkId = `jij282d811iJ32jjd`
-export function MyLog({text, by, onReactPress, onSeen, key, time, status,reactions=[]}){
+export function MyLog({text, by,onRightClick, onReactPress, onSeen, key, time, status,reactions=[]}){
     const colored = `animate-fade-in-up bg-gradient-to-r from-blue-500 to-indigo-700 text-white p-2 rounded-2xl w-fit`
     const [hovered , setHovered] = useState(false)
     const texts = text.split(` `)
     
 
     return (
-        <div 
+        <div
         key={`k3030k0r032,${key}`}
         className="w-full h-fit flex justify-end  relative">
             <motion.div
@@ -19,8 +19,8 @@ export function MyLog({text, by, onReactPress, onSeen, key, time, status,reactio
                 onViewportEnter={()=>{
                     onSeen()
                 }}
-                whileInView ={{opacity: [0, 1], translateY:[50, 0]}}
-                transition={{delay: 0.1 * key}}
+                // whileInView ={{opacity: [0, 1], translateY:[50, 0]}}
+                // transition={{delay: 0.1 * key}}
                 initial={{opacity: 0, translateY: 50}}
                 animate={{opacity: [0, 1], translateY:[50, 0]}}
                 className={`flex  items-center relative top-0  right-0 w-fit justify-end h-fit gap-2 `}>
@@ -35,34 +35,19 @@ export function MyLog({text, by, onReactPress, onSeen, key, time, status,reactio
                     </div>
                     <div 
                     style={{boxShadow:`2px 2px 24px -14px black`}}
+                    onMouseDown={(e)=>{
+                        if(e.button === 2)onRightClick(e.target)
+                    }} 
                     onClick={(e)=>{
                         onReactPress(e.target)
                     }}
                     className="relative p-1 px-1 sm:p-2 sm:px-4 rounded-2xl bg-white/20 w-fit  overflow-hidden border border-white/20 text-[.8rem] ">
-                        <BGS/>
+                        {/* <BGS/> */}
                         <div 
                         
-                        className="message text-white z-10 text-[50%] sm:text-[80%] md:text-[100%] ">{
-                            texts.map((word,k)=>{
-                                const cb = ()=>{}
-                                let w = word
-                                let type = `link`
-                                const split = word.split(`-`)
-                                if(split.length > 1 && String(split[0]) === `${globalLinkId}`){
-                                }
-                                return (
-                                    <span 
-                                    onClick = {()=>{cb}}
-                                    key={`33333332222233{ddd${k}`}
-                                    className={`${type === `link`?`border-b-2 border-b-red-300 text-red-400 cursor-pointer`:``} flex items-center gap-2`}
-                                    > 
-                                    {type === `link` && (
-                                        <div className="link w-3 h-3 text-white relative">{<Link2 className={`w-full h-full`}/>}</div>
-                                    )}
-                                    {w}</span>
-                                )
-                            })
-                        }</div>
+                        className="message text-white z-10 text-[50%] sm:text-[80%] md:text-[100%] ">
+                        {text}
+                        </div>
                         {time && <div className="time text-end text-[.6rem] text-[50%] sm:text-[80%] md:text-[100%] text-white/60 uppercase">{time}</div>}
                         <motion.div
                          

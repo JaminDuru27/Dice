@@ -84,6 +84,8 @@ export function Groups({setMessage}){
         </div>
     )
 }
+export const specialId = `2900101j20j0n0113j93j292j`
+
 export function Group({key, name, cb, id, setMessage}){
     const nav = useNavigate()
     return (
@@ -100,11 +102,10 @@ export function Group({key, name, cb, id, setMessage}){
             <div className="flex w-full mt-2 flex items-center justify-between gap-2">
                 <div 
                 onClick={()=>{
-                    navigator.clipboard.writeText(`DG-${id}`)
+                    navigator.clipboard.writeText(`${specialId}-DG-${id}`)
                     setMessage({message:`copied link`, type: `info`})
                 }}
-                
-                className="dots flex justify-center items-center p-1 w-5 h-5  rounded-full bg-white/10">{<Link/>}</div>
+                className="dots flex z-20 justify-center items-center p-1 w-5 h-5  rounded-full bg-white">{<Link/>}</div>
                 <div 
                 onClick={()=>{
                     nav(`/chat?type=2&ref=${id}`)

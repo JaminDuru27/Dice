@@ -25,7 +25,7 @@ export function SideBar({setShowSearch, setMessage, openSide, profile, setOpenSi
                     d?.name === `groups` && <Groups accessibility={accessibility} setAccessibility={setAccessibility} setMessage={setMessage} />
                 }
                 {
-                    d?.name === `contacts` && <Contacts profile={profile} setShowSearch={setShowSearch} accessibility={accessibility} setAccessibility={setAccessibility} />
+                    d?.name === `contacts` && <Contacts setMessage={setMessage} profile={profile} setShowSearch={setShowSearch} accessibility={accessibility} setAccessibility={setAccessibility} />
                 }
             </SideMenuWrap>
         )}

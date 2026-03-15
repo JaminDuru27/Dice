@@ -24,6 +24,10 @@ const Convo = new mongoose.Schema({
                 sentBy:{
                     type:mongoose.Schema.Types.ObjectId, ref: `User`
                 },
+                messageType:{
+                    type: String,
+                    default: `message`
+                },
                 date:{
                     type: Date,
                     default: Date.now,

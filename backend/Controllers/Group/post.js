@@ -14,6 +14,7 @@ export async function PostGroup(req, res){
             createdBy: userId,
             name,
         })
+        group.Contacts.push(userId)
 
         await group.save()
 

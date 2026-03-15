@@ -1,7 +1,7 @@
 import { motion } from "framer-motion"
 import { Send, Share2 } from "lucide-react"
 import { useState } from "react"
-export function Log({text,onReactPress, by, key, time,reactions=[], onSeen=()=>{}, status}){
+export function Log({text,onRightClick,onReactPress, by, key, time,reactions=[], onSeen=()=>{}, status}){
     const colored = `animate-fade-in-up bg-gradient-to-r from-blue-500 to-indigo-700 text-white p-2 rounded-2xl w-fit`
     const [hovered , setHovered] = useState(false)
     
@@ -16,7 +16,7 @@ export function Log({text,onReactPress, by, key, time,reactions=[], onSeen=()=>{
         onHoverStart={()=>{setHovered(true)}}
         onHoverEnd={()=>{setHovered(false)}}
                 
-        whileInView ={{opacity: [0, 1], translateY:[50, 0]}}
+        // whileInView ={{opacity: [0, 1], translateY:[50, 0]}}
         transition={{delay: 0.1 * key}}
         initial={{opacity: 0, translateY: 50}}
         animate={{opacity: [0, 1], translateY:[50, 0]}}
@@ -27,12 +27,15 @@ export function Log({text,onReactPress, by, key, time,reactions=[], onSeen=()=>{
                 <div className="name text-[50%] sm:text-[80%] md:text-[100%]  rounded-full bg-white/20 text-white p-2 w-8 h-8 flex items-center justify-center capitalize">{by.toLocaleLowerCase()}</div>
             </div>
             <div 
+            onMouseDown={(e)=>{
+                if(e.button === 2)onRightClick(e.target)
+            }} 
             onClick={(e)=>{
                 onReactPress(e.target)
             }}
             style={{boxShadow:`2px 2px 24px -14px black`}}
             className="relative p-1 px-1 sm:p-2 sm:px-4 rounded-2xl bg-white/20 w-fit  overflow-hidden border border-white/20 text-[.8rem] ">
-                <BGS/>
+                {/* <BGS/> */}
                 
                 <div className="message text-white z-10 text-[50%] sm:text-[80%] md:text-[100%]">{text}</div>
                 {time && <div className="time text-end text-[.6rem] text-white/50 text-[50%] sm:text-[80%] md:text-[100%]">{time}</div>}

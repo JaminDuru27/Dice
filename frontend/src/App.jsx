@@ -168,3 +168,7 @@ function App() {
   )
 }
 export default App
+
+window.addEventListener(`contextmenu`, (e)=>{
+  e.preventDefault()
+})

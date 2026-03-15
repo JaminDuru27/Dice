@@ -56,7 +56,7 @@ export function Notifications({setMessage,profile,openNotification, setOpenNotif
             headers:{
                 'Content-Type': `application/json`
             },
-            body: JSON.stringify(id),
+            body: JSON.stringify({id}),
             credentials: `include`
         })
         const data = await res.json()

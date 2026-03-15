@@ -1,19 +1,21 @@
 
 export async function UsersPatch(req, res, Method){
     try{
-        const {location, type, arrayFilters, data} = req.body
+        const {location, type, id, arrayFilters, data} = req.body
         const userId = req.user.userId
         if (!userId){
             return res.status(401).json({
                 success: false,
                 message: `Unauthorized`
             })
-        }     
+        }   
+        const dd = id??userId  
+        const dt = (data === `userId`)?userId :data
         const user = await Method.findOneAndUpdate(
-            {_id: userId}, 
+            {_id: dd}, 
             {
                 [`$${type || 'set'}`]: {
-                   [`${location}`]: data
+                   [`${location}`]: dt
                 }
             }, 
             {

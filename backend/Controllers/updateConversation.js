@@ -5,7 +5,7 @@ import { User } from "../Models/user.js"
 
 export async function UpdateConversation(req,res){
     try {
-        const {id, type, message, reactions} = req.body
+        const {id, type, message, messageType, reactions} = req.body
         if(type === `1`){
             const userId = req.user.userId
             
@@ -36,6 +36,7 @@ export async function UpdateConversation(req,res){
             await convo.save()
             const obj = {
                 message, reactions,
+                messageType,
                 sentBy:userId,
                 status: `delivered`    
 
@@ -69,16 +70,17 @@ export async function UpdateConversation(req,res){
             if(!group){
                 return res.status(400).json({success: false, message:`Reciever Not Found`})
             }
-
             //search convo based on ur id and recepient id
             let convo
             convo = await Conversation.findOne({
-                from: userId, to: id, type
+                 to: id, type
             })
-            if(!convo)
-            convo = await Conversation.findOne({
-                to: userId, from: id, type
-            })
+            if(!convo){
+                return res.status(400).json({
+                    message: `No Conversation Found`,
+                    success:false,
+                })
+            }
             
 
             if(!convo){
@@ -93,6 +95,7 @@ export async function UpdateConversation(req,res){
             const obj = {
                 message, reactions,
                 sentBy:userId,
+                messageType,
                 status: `delivered`    
 
             }
