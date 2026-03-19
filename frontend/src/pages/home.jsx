@@ -7,6 +7,7 @@ import { GetProfile } from "../utils/getProfile"
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 import { Notifications } from "../components/notifications/notificatitons"
+import { VoteListPopup } from "../components/VoteListPopup/votelist"
 
 export function Home({setMessage,data,setShowSearch, openNotification, setOpenNotification, profile, accessibility, setAccessibility, setOpenAcct, openAcct, setOpenSide, openSide}){
     const nav = useNavigate()
@@ -19,6 +20,7 @@ export function Home({setMessage,data,setShowSearch, openNotification, setOpenNo
         
         <SideBar setMessage={setMessage} setShowSearch={setShowSearch} profile={profile} accessibility={accessibility} setAccessibility={setAccessibility} openSide={openSide} setOpenSide={setOpenSide}/>
         <Dice setMessage={setMessage} />
+        <VoteListPopup setMessage={setMessage}/>
         </>
     )
 }

@@ -17,7 +17,7 @@ const Convo = new mongoose.Schema({
     list: {
         type: [
             {
-                ref:{
+                reference:{
                     type: mongoose.Schema.Types.ObjectId,
                     ref: `User`,
                 },
@@ -35,6 +35,16 @@ const Convo = new mongoose.Schema({
                 status:{
                     type: String,
                     default: ``,
+                },
+                votingList:{
+                    type: [{
+                        from: {
+                            type: mongoose.Schema.Types.ObjectId,
+                            ref: `User`
+                        },
+                        text: {type:String, default:``},
+                    }],
+                    default: []
                 },
                 maskFrom:{
                     type: [String],
@@ -60,5 +70,5 @@ const Convo = new mongoose.Schema({
         default: []
     }
 })
-
+Convo.index({ "list.votingList.from": 1 })
 export const Conversation = new mongoose.model(`Conversation`, Convo,`Conversations`)

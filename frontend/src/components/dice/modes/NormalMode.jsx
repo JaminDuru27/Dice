@@ -1,6 +1,11 @@
-import { Dice2, Dice4, Dice5, Dice6, Dice6Icon, DicesIcon, SmileIcon, XIcon } from "lucide-react";
-
-export function NormalMode(){
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { motion } from "framer-motion";
+import { Dice2, Dice4, Dice5, Dice6, Dice6Icon, DicesIcon, Link2, SmileIcon, XIcon } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { AddProject } from "../../../utils/addProject";
+import { useEffect, useRef, useState } from "react";
+import { specialId } from "../../sidebar/groups/groups";
+export function NormalMode({mode, setMessage}){
     const addnewproject = async ({name, priority, id})=>{
         const res = AddProject(setMessage,{name: name, projectId: id}, 'projects', 'push')
         .then(project=>{
@@ -52,12 +57,14 @@ export function NormalMode(){
                             setlist(p=>p.map((i, ki)=>ki===k?{...i, name:e.target.value}:i  ))
                         }}
                         className="item  min-w-20 shrink-0  w-26  h-8 flex items-center gap-1 text-[.7rem] relative">
-                            <select 
+                            <motion.select 
+                            animate={mode === `normal`?{opacity: 1, display:`block`}:{opacity:0,display:`none`}}
                             value={item.priority}
                             onInput={(e)=>{
                                 const v = Number(e.target.value)
-                                console.log(v)
-                                item.priority = v
+                                const temp = {...item, priority:v}
+                                const l = list.filter(i=>i !== item)
+                                setlist(p=>([...l.map(e=>e), temp]))
 
                             }}
                             name="" className="text-white border-1 border-white/10 p-1 rounded-lg" id="">
@@ -66,7 +73,7 @@ export function NormalMode(){
                                         <option key={`k01j9j99nfyfgp$${k}`} className="text-black" value={e}>{e}</option>
                                     )
                                 })}
-                            </select>
+                            </motion.select>
                             <input 
                             autoFocus={true}
                             type="text" value={item.name} className="input capitalize bg-white  p-2 rounded-2xl w-full h-full" />
@@ -94,7 +101,7 @@ export function NormalMode(){
                 {<Dice5 size={70} color={`#b732b3   `}/>}
             </motion.div>
             <motion.div 
-            animate={list.length && result === undefined ?{scale: [1, 1.2, 1], display: `flex`}:{opacity: 0, display: `none`}}
+            animate={mode === `group`?{opacity:0,display:`none`}:list.length && result === undefined ?{scale: [1, 1.2, 1], display: `flex`}:{opacity: 0, display: `none`}}
             onClick={()=>{
                 const valid = list.every(i=>i.name.trim() !== "")
                 if(!valid) {setMessage({message:`Please fill in all item names`, type:`error`}); return}
@@ -102,7 +109,7 @@ export function NormalMode(){
             
                 time[`current`] = setTimeout(()=>{
                     setroll(false)
-                    const index = randomIndex()
+                    const index = randomIndex(mode)
                     const id  = Math.random().toString(36).substring(2, 9)
                     mutate({id, name: list[index].name, priority: list[index].priority})
 
@@ -113,7 +120,24 @@ export function NormalMode(){
                 }, 5000)
             }}
             style={{display: `none`}}
-            className="add flex rounded-[2rem] outline-red-500 outline-2 outline-offset-2  cursor-pointer bg-pink-700 p-2 px-4">Roll {<DicesIcon/>}
+            className="add flex rounded-[2rem] outline-red-500 outline-2 outline-offset-2 items-center  cursor-pointer bg-pink-700 p-2 px-4">Roll {<DicesIcon/>}
+            </motion.div>
+            <motion.div 
+            animate={mode === `group`?{opacity:1,display:`flex`}:list.length && result === undefined && mode === `group` ?{scale: [1, 1.2, 1], display: `flex`}:{opacity: 0, display: `none`}}
+            onClick={()=>{
+                const valid = list.every(i=>i.name.trim() !== "")
+                if(!valid) {setMessage({message:`Please fill in all item names`, type:`error`}); return}
+                let s = `${specialId}-DGM-`
+                list.map(({name}, i)=>{
+                    if(i === 0){s += name;return}
+                    s+=`+${name}`
+                })
+                navigator.clipboard.writeText(s)
+                setMessage({message:`copied link`})
+            }}
+            style={{display: `none`}}
+            className="add flex rounded-[2rem] outline-blue-500 outline-2 outline-offset-2 items-center  cursor-pointer bg-blue-700 p-2 px-4"
+            >Link {<Link2/>}
             </motion.div>
  
         </div>

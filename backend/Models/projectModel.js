@@ -25,6 +25,14 @@ export const ProjectSchema = new mongoose.Schema({
     },
     todos:{
         type: [{
+            leader:{
+                type: mongoose.Schema.Types.ObjectId,
+                ref: `User`
+            },
+            contacts:{
+                type: [mongoose.Schema.Types.ObjectId],
+                ref: `User`
+            },
             title: {
                 type: String,
                 required: [true, `Todo Title is Required`],

@@ -85,7 +85,7 @@ export function Contact({key, name, cb, setMessage, onlinkcopy}){
         key={`k13993gdnjoq;'[]${key}`}
         onHoverStart={()=>{console.log("hovered"); setHovered(true)}}
             onHoverEnd={()=>{setHovered(false)}}
-className="group px-2 shrink-0 min-w-30 cursor-pointer drop-shadow-black/100 overflow-hidden drop-shadow-2xl w-fit bg-white/20 p-2 rounded-2xl flex flex-col justify-center items-center">
+className="group px-2 shrink-0 min-w-30  cursor-pointer drop-shadow-black/100 overflow-hidden drop-shadow-2xl w-fit bg-white/20 p-2 rounded-2xl flex flex-col justify-center items-center">
             
             <div 
             onClick={()=>{
@@ -93,7 +93,7 @@ className="group px-2 shrink-0 min-w-30 cursor-pointer drop-shadow-black/100 ove
             }}
             className="link absolute flex justify-center items-center p-1 rounded-full gap-2 top-1 right-1 bg-white/50 cursor-pointer w-6 h-6">{<Link className="w-fit h-fit"/>}</div>
             <div className="icon p-2 flex justify-center items-center bg-white/20 rounded-full mb-2 text-black/20">
-                {<Dice3 size={30}/>}
+                {<Dice3 className="w-4 h-4 sm:w-8 sm:h-8 md:w-10 md:h-10"/>}
             </div>
             <div className="name  text-[.6rem] w-fit max-w-30  text-ellipsis ">{name}</div>
             <div className="name  text-[.6rem] w-fit max-w-30  text-ellipsis opacity-[.7] ">#{name.split(' ')[0]}</div>
@@ -105,7 +105,7 @@ className="group px-2 shrink-0 min-w-30 cursor-pointer drop-shadow-black/100 ove
                     <motion.div 
                     animate={(hovered)?{width: [0, `100%`]}:{width: [`100%`, 0]}}
                     className="w-100 capitalize text-[.5rem] overflow-hidden text-nowrap">talk with {name.split(' ')[0]}</motion.div>   
-                {<MessageCircleDashed/>}</div>
+                {<MessageCircleDashed className="w-4 h-4 sm:w-8 sm:h-8 md:w-10 md:h-10"/>}</div>
             </div>
         </motion.div>
     )

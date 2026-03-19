@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ConeIcon, Dice3, DoorClosedIcon, DoorOpenIcon, DotIcon, DotSquare, DropletsIcon, Keyboard, LucideMenu, MenuSquare, Plus, Send, Smile, XIcon} from "lucide-react";
+import { ConeIcon, Dice3, DoorClosedIcon, DoorOpenIcon, DotIcon, DotSquare, DropletsIcon, Keyboard, LucideMenu, MenuSquare, PersonStanding, Plus, Send, Smile, UserCircle, XIcon} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { MyLog } from "./mylog";
 import { Log } from "./log";
@@ -16,7 +16,7 @@ import { ContextMenu } from "./contextMenu/contextMenu";
 import { messageoptions } from "./utils/messageoptions";
 import { groupoptions } from "./utils/groupOptions";
 import { chatoptions } from "./utils/contactOptions";
-import { isContactLink, isGroupLink } from "./utils/linkvalidators";
+import { isContactLink, isGroupLink, isVoteTodoLink } from "./utils/linkvalidators";
 export function Chat({setMessage}){
     const nav = useNavigate()
     const [query] = useSearchParams()
@@ -24,7 +24,11 @@ export function Chat({setMessage}){
     const ref  = query.get('ref')
     const [showEmoji, setShowEmoji] = useState(false)
     const [emojiPicker,setEmojiPicker] = useState(false)
-    const {convomutation, isLoading, addFriendMutation, joinGroupMutation, reactMutation, jGFn, seenMutation, reactfn, ssenfn, fn, mfn, queryclient, error,data} = q(ref, type, setMessage)
+    const {
+    convomutation, isLoading, addFriendMutation, joinGroupMutation,
+    reactMutation, jGFn, seenMutation, reactfn, ssenfn, fn, mfn, 
+    queryclient, error,data, voteMutation} 
+    = q(ref, type, setMessage)
     useEffect(()=>{
         socket.on(`update-chat`,()=>{
             queryclient.invalidateQueries([`chat`])
@@ -96,9 +100,65 @@ export function Chat({setMessage}){
                 const name = convo?.sentBy.username[0]
                 const isMe = ()=>convo.sentBy._id === data.userId
 
+                const linkid = convo?.message?.split(`-`)[2]
+                const names = linkid?.split(`+`)
+
                 // if(pre === `DT`){//todo}
                 if(convo.messageType === `status`){}
                 else if(convo.messageType === `todo`){}
+                else if(convo.messageType === `Vote-Todo-Link`){
+                    return (
+                        <div 
+                        onClick={()=>{
+                            console.log(convo.message)
+                            console.log(names)
+                            // nav(`/chat?type=1&ref=${linkid}`) 
+                        }}
+                        className="cursor-pointer">
+                            <div className="capitalize">From {data?.refData?.username} To You</div>
+                            <div className="">Vote On The TodoList</div>
+                        
+                            <form className="flex gap-2 flex-col mt-4">{
+                                (names || []).map((name, k)=>{
+                                    const shouldCheck = convo.votingList.find(e=>e.from === data.userId)?.text === name
+                                    const no = convo.votingList.filter(e=>e.text === name)
+                                    const obj = {}
+                                    const ln = convo.votingList.filter(e=>e.text === name).length
+                                    return (
+                                        <div className="bg-white/10 rounded-4xl p-2 sm:p-4 border  border-white/20  flex flex-col gap-2 capitalize">
+                                            <div className="input w-fit">
+                                                <label 
+                                                className="flex gap-2 items-center my-2"
+                                                htmlFor={name}>
+                                                    <input
+                                                    onChange={(e)=>{
+                                                        voteMutation.mutate({name, convoId: data.data._id, listId:convo._id})
+                                                    }}
+                                                    type="radio"
+                                                    name="option"
+                                                    id={name} 
+                                                    value={name}
+                                                    checked={shouldCheck}
+                                                    key={`2882hd8h2921grtcgfj${k}`}
+                                                    className=""/>
+                                                    {name}
+                                                </label>
+                                            </div>
+                                            <div className=" w-full h-1 rounded-2xl bg-white/20 overflow-auto relative">
+                                                <div className="bg-amber-500 w-[10%] h-full rounded-2xl"></div>
+                                            </div>
+                                            <div className="flex gap-2 items-center opacity-[.6]">
+                                                <div className="">{ln}</div>
+                                                <div className="">{<UserCircle className="w-4 h-4"/>}</div>
+                                                {shouldCheck && <div className="">{<UserCircle className="w-4 text-amber-500 h-4"/>}</div>}
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            }</form>
+                        </div>
+                    )
+                }
                 else if(convo.messageType === `Group-Link`){
                     return (
                         <div 
@@ -183,6 +243,11 @@ export function Chat({setMessage}){
             if(isclink?.status){
                 messageType = `Contact-Link`
             }
+            const isvlink = isVoteTodoLink(textmssage)    
+            if(isvlink?.status){
+                messageType = `Vote-Todo-Link`
+            }
+            // console.log(isvlink)
             convomutation.mutate({message:textmssage, messageType}, ref,)
         }}
         />

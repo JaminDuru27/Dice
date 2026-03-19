@@ -19,6 +19,8 @@ import { io } from 'socket.io-client'
 import { SearchContacts } from './components/searchContacts/showSearch'
 import { SideBar } from './components/sidebar/sidebar'
 import { Notifications } from './components/notifications/notificatitons'
+import { Achievement } from './components/rewards/achievements/achievements'
+import { Badge } from './components/rewards/badges/badge'
 // import {} from '@tanstack/react-router'
 const api = `http://localhost:3000`
 export const socket = io.connect(api, { transports: ['websocket'] })
@@ -33,6 +35,8 @@ function App() {
   const [openNotification, setOpenNotification ] = useState(false)
   const [reload, setReload] = useState(false)
   const [showSearch, setShowSearch] = useState(false)
+  const [achievement, setAchievement] = useState(null)
+  const [badge, setBadge] = useState(null)
   const [accessibility, setAccessibility]  = useState({
     theme: `normal`,
     fontsize: 100,
@@ -103,6 +107,8 @@ function App() {
   )
   return (
     <>
+    {/* <Achievement achievement={achievement} setAchievement={setAchievement}/> */}
+    <Badge badge={badge} setBadge={setBadge}/>
     <Intro />
     <div 
     style={{

@@ -21,3 +21,10 @@ export function isContactLink(message){
     if(op === `DC`)return {status:true, dataId:dataId} 
     else return false
 }
+export function isVoteTodoLink(message){
+    const op = getOp(message)
+    if(!op)return
+    const dataId = message.split[2]
+    if(op === `DGM`)return {status:true, dataId:dataId} 
+    else return false
+}

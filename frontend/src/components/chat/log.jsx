@@ -35,7 +35,7 @@ export function Log({text,onRightClick,onReactPress, by, key, time,reactions=[],
             }}
             style={{boxShadow:`2px 2px 24px -14px black`}}
             className="relative p-1 px-1 sm:p-2 sm:px-4 rounded-2xl bg-white/20 w-fit  overflow-hidden border border-white/20 text-[.8rem] ">
-                {/* <BGS/> */}
+                {/* <BGS/>   */}
                 
                 <div className="message text-white z-10 text-[50%] sm:text-[80%] md:text-[100%]">{text}</div>
                 {time && <div className="time text-end text-[.6rem] text-white/50 text-[50%] sm:text-[80%] md:text-[100%]">{time}</div>}

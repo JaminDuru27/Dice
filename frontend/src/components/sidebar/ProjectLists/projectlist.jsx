@@ -14,8 +14,10 @@ export function ProjectList({d,setD, profile}){
         className="w-[40%] opacity- sm:w-1/4 p-2 md:w-1/4 lg:w-1/6 border border-white/20  rounded-sm bg-white/2 text-white backdrop-blur-2xl h-[90vh] fixed top-1/2 translate-y-[-50%] left-0 z-10">
             <motion.div 
             onClick={()=>{setD(false)}}
-            className="exit absolute top-0 w-7 h-7  right-0 translate-x-[120%] flex justify-center items-center bg-white/30 p-2 rounded-full backdrop-blur-3xl  translate-y-[50%] cursor-pointer "
-            >{<DoorOpenIcon className="w-full h-full text-white"/>}</motion.div>
+            className="exit absolute top-0 w-7 h-7 z-20  right-0 translate-x-[120%] flex justify-center items-center bg-white/30 p-2 rounded-full backdrop-blur-3xl  translate-y-[50%] cursor-pointer "
+            >{<DoorOpenIcon 
+            onClick={()=>{setD(false)}}
+            className="w-full h-full text-white"/>}</motion.div>
             
             <Weather/>
             

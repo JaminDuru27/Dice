@@ -103,6 +103,21 @@ const jGFn = async ({id, e})=>{
         return d.data
     }catch(err){console.error(err)}
 }
+const vFn = async ({name, convoId, listId})=>{
+    try{
+        const api =   `http://localhost:3000`
+        const res = await fetch(`${api}/api/users/updateVoteList`, {
+            method:`PATCH`,
+            headers:{
+                'Content-Type': `application/json`
+            },
+            body:JSON.stringify({data:name, convoId:convoId,listId,}),
+            credentials: `include`
+        })
+        const d = await res.json()
+        return d.data
+    }catch(err){console.error(err)}
+}
 const addFriendMutationFn = async({id})=>{
     alert(id)
         const api = 'http://localhost:3000'
@@ -159,6 +174,12 @@ const joinGroupMutation = useMutation({
         queryclient.invalidateQueries([`chat`])
     }
 })
+const voteMutation = useMutation({
+    mutationFn: vFn,
+    onSuccess: ()=>{
+        queryclient.invalidateQueries([`chat`])
+    }
+})
 
-return {convomutation,addFriendMutation, joinGroupMutation, queryclient, reactMutation, isLoading, error, data, jGFn, seenMutation, reactfn, ssenfn, fn, mfn}
+return {convomutation,addFriendMutation, voteMutation, joinGroupMutation, queryclient, reactMutation, isLoading, error, data, jGFn, seenMutation, reactfn, ssenfn, fn, mfn}
 }

@@ -25,6 +25,7 @@ import { ConvoPatch } from '../Controllers/Convo/patch.js'
 import { PostGroup } from '../Controllers/Group/post.js'
 import { GetGroup } from '../Controllers/Group/get.js'
 import { Group } from '../Models/groupModel.js'
+import { UpdateVoteList } from '../Controllers/updateVoteList.js'
 export  const userRouter = express.Router()
 
 userRouter.post('/register', Register)
@@ -47,6 +48,7 @@ userRouter.get('/getFriendsList', VerifyToken, GetFriendsList)
 userRouter.patch('/notificationOp', VerifyToken, NotificationOp)  
 userRouter.get('/getConversations', VerifyToken, GetConversations)  
 userRouter.patch('/updateConversation', VerifyToken, UpdateConversation)  
+userRouter.patch('/updateVoteList', VerifyToken, UpdateVoteList)  
 //group
 userRouter.post('/group', VerifyToken, PostGroup) //add group  
 // userRouter.delete('/Users/group', VerifyToken, UpdateConversation) //remove group  
